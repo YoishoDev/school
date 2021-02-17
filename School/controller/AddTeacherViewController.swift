@@ -108,6 +108,9 @@ class AddTeacherViewController: NSViewController {
                 teacher.lastName = teacherNameTextField.stringValue
                 teacher.firstName = teacherFirstNameTextField.stringValue
                 //  Schule zuordnen, da in MainView ausgewaehlt
+                //  ueber LinkedObjects wird der Lehrer in der Schule automatisch eingetragen
+                //  leider wird diese Aenderung scheinbar nicht "benachrichtigt"?
+                //  https://github.com/realm/realm-cocoa/issues/7054
                 if actualSchool != nil {
                     
                     teacher.schools.append(actualSchool!)
@@ -197,7 +200,7 @@ extension AddTeacherViewController: NSTableViewDelegate {
             let rowIndexes = courseTableView.selectedRowIndexes
             for index in rowIndexes {
                 
-                print(courseTableDataList[index])
+                inTableViewSelectedCourseList.append(courseTableDataList[index])
                 
             }
             

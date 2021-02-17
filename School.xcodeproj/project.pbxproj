@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		454757D125DD7CD500176974 /* ClassDiagram.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 454757D025DD7CD500176974 /* ClassDiagram.pdf */; };
 		455AD66425DD1F6B00644689 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 455AD66325DD1F6B00644689 /* AppDelegate.swift */; };
 		455AD66B25DD1F6C00644689 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 455AD66925DD1F6C00644689 /* Main.storyboard */; };
 		455AD67625DD1F7400644689 /* notes in Resources */ = {isa = PBXBuildFile; fileRef = 455AD67525DD1F7400644689 /* notes */; };
@@ -27,6 +28,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		454757D025DD7CD500176974 /* ClassDiagram.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = ClassDiagram.pdf; sourceTree = "<group>"; };
 		455AD66025DD1F6B00644689 /* School.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = School.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		455AD66325DD1F6B00644689 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		455AD66A25DD1F6C00644689 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -98,6 +100,7 @@
 		455AD67425DD1F7400644689 /* docs */ = {
 			isa = PBXGroup;
 			children = (
+				454757D025DD7CD500176974 /* ClassDiagram.pdf */,
 				455AD67525DD1F7400644689 /* notes */,
 			);
 			path = docs;
@@ -193,6 +196,7 @@
 				455AD66B25DD1F6C00644689 /* Main.storyboard in Resources */,
 				455AD6A525DD2E2200644689 /* Assets.xcassets in Resources */,
 				455AD69125DD1F9D00644689 /* REALM.LICENSE in Resources */,
+				454757D125DD7CD500176974 /* ClassDiagram.pdf in Resources */,
 				455AD69825DD1FAC00644689 /* APACHE.LICENSE in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

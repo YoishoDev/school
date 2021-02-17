@@ -18,14 +18,19 @@ class MainViewController: NSViewController {
     
     //  Benachrichtigungen bei Aenderungen in der "Datenbank"
     private var realmNotificationToken: NotificationToken?
+    private var realmSchoolCollectionNotificationToken: NotificationToken?
+    private var objectNotificationToken: NotificationToken?
     
     //  View-Elemente
     @IBOutlet weak var schoolNameComboBox: NSComboBox!
     @IBOutlet weak var countOfSchoolClassesLabel: NSTextField!
     @IBOutlet weak var countOfTeacherLabel: NSTextField!
     
-    //  wird bei Aenderungen an der "Datenbank" aufgerufen
-    fileprivate func updateView(_ notification: Realm.Notification, _ realm: Realm) {
+    //  Vbei Aenderungen an der "Datenbank" die View aktualisieren
+    //  ueber LinkedObjects wird z.B. der Lehrer in der Schule automatisch eingetragen
+    //  leider wird diese Aenderung scheinbar nicht "benachrichtigt"?
+    //  https://github.com/realm/realm-cocoa/issues/7054
+    private func updateView(_ notification: Realm.Notification, _ realm: Realm) {
         
         //  Auswahlbox neu befuellen
         let schoolList = realm.objects(School.self)
@@ -39,20 +44,17 @@ class MainViewController: NSViewController {
                 //  Eintrag zur Auswahlbox hinzufuegen
                 schoolNameComboBox.addItem(withObjectValue: school.name)
                 //  aktuelle Schule setzen und selektieren
-                if index == 0 {
-                    if actualSchool?.name.uppercased() == school.name.uppercased() {
+                if actualSchool?.name.uppercased() == school.name.uppercased() {
                         
-                        actualSchool = school
                         schoolNameComboBox.selectItem(at: index)
-                        index += 1
                         
-                    }
                 }
-                
+                index += 1
             }
+            //  Anzahl der zugeordneten Lehrer anzeigen
+            countOfTeacherLabel.stringValue = String(actualSchool?.teacher.count ?? 0)
         }
-        //  Anzahl der zugeordneten Lehrer anzeigen
-       countOfTeacherLabel.stringValue = String(actualSchool?.teacher.count ?? 0)
+        
     }
     
     //  wird bei Initalisieren der View aufgerufen
@@ -95,6 +97,21 @@ class MainViewController: NSViewController {
                     if index == 0 {
                         
                         actualSchool = school
+                        objectNotificationToken = school.observe { change in
+                            switch change {
+                            case .change(let object, let properties):
+                                for property in properties {
+                                    print("Property '\(property.name)' of object \(object) changed to '\(property.newValue!)'")
+                                }
+                            case .error(let error):
+                                let dialog = ModalOptionDialog(message: error.localizedDescription,
+                                                               buttonStyle: ModalOptionDialog.ButtonStyle.OK_OPTION,
+                                                               dialogStyle: ModalOptionDialog.DialogStyle.CRITICAL)
+                                dialog.showDialog()
+                            case .deleted:
+                                return
+                            }
+                        }
                         schoolNameComboBox.selectItem(at: index)
                         index += 1
                         
@@ -166,6 +183,8 @@ class MainViewController: NSViewController {
     override func viewDidDisappear() {
         
         realmNotificationToken?.invalidate()
+        realmSchoolCollectionNotificationToken?.invalidate()
+        objectNotificationToken?.invalidate()
         
     }
 
@@ -177,12 +196,41 @@ extension MainViewController: NSComboBoxDelegate {
     //  neue Schule (Name) in der Auswahlbox gewaehlt
     internal func comboBoxSelectionDidChange(_ notification: Notification) {
     
-        if let school = schoolNameComboBox.objectValueOfSelectedItem as? School {
+        if let schoolName = schoolNameComboBox.objectValueOfSelectedItem as? String {
             
-            //  aktuelle Schule setzen
-            actualSchool = school
-            //  View aktualisieren
-            countOfTeacherLabel.stringValue = String(school.teacher.count)
+            //  aktuelle Schule aus Realm laden
+            do {
+                
+                //  Realm initialisieren
+                let realm = try Realm()
+                //  Schulen laden
+                let schoolList = realm.objects(School.self)
+                //  nach Namen filtern
+                let filterString = "name == '" + schoolName + "'"
+                let filteredResultSet = schoolList.filter(filterString)
+                if filteredResultSet.count == 1 {
+                    
+                    actualSchool = filteredResultSet[0]
+                    //  View aktualisieren
+                    countOfTeacherLabel.stringValue = String(actualSchool?.teacher.count ?? 0)
+                    
+                } else {
+                    
+                    let dialog = ModalOptionDialog(message: "Schuldaten konnten nicht geladen werden!",
+                                                   buttonStyle: ModalOptionDialog.ButtonStyle.OK_OPTION,
+                                                   dialogStyle: ModalOptionDialog.DialogStyle.CRITICAL)
+                    dialog.showDialog()
+                    
+                }
+                
+            } catch {
+                
+                let dialog = ModalOptionDialog(message: error.localizedDescription,
+                                               buttonStyle: ModalOptionDialog.ButtonStyle.OK_OPTION,
+                                               dialogStyle: ModalOptionDialog.DialogStyle.CRITICAL)
+                dialog.showDialog()
+                
+            }
             
         }
         

@@ -23,9 +23,9 @@ class AddClassViewController: NSViewController {
     override func viewDidLoad() {
         
         super.viewDidLoad()
-        print(inViewSelectedSchool?.name)
+        
         //  Liste von (moeglichen) Klassenlehrern laden
-        //  muss an der gleichen Schule auch unterrichten
+        //  muessen an der gleichen Schule auch unterrichten
         if let teacherList = inViewSelectedSchool?.teacher {
         
             if !teacherList.isEmpty {
