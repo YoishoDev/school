@@ -1,13 +1,16 @@
+
+
 Copyright (c) [2021] [Michael Schmidt, michael.schmidt@app-making.de]
 You can use it under the MIT License (You find it in file LICENSE)
 
 Annahmen:
 
-1) 1 Schule hat mehrere Klassen, mehrere Lehrer, mehrere Schüler, es werden mehrere Fächer unterrichtet
-2) jede Schule wird nur über den Namen identifiziert
-3) jeder Lehrer kann an mehreren Schulen unterrichten
-4) jeder Lehrer kann mehrere Fächer unterrichten
-5) jede Klasse gibt es einmal an jeder Schule, sie wird nur über den Namen identifiziert
-6) jeder Schüler lernt an genau 1 Schule, jeder Schüler wir nur über den Namen identifiziert
-7) jeder Schüler kan nur in genau 1 Klasse sein
-8) jede Klasse hat genau 1 Klassenlehrer, dieser muss an der gleichen Schule sein
+1)  1 Schule hat mehrere Klassen, mehrere Lehrer, mehrere Schüler, es werden mehrere Fächer unterrichtet
+2)  jede Schule wird nur über den Namen identifiziert
+3)  jeder Lehrer kann an mehreren Schulen unterrichten
+4)  jeder Lehrer kann mehrere Fächer unterrichten
+5)  jede Klasse gibt es einmal an jeder Schule, sie wird nur über den Namen identifiziert
+6)  jeder Schüler lernt an genau 1 Schule, jeder Schüler wir nur über den Namen identifiziert,
+    kann also nur einmal pro Klasse / Schule existieren
+7)  jeder Schüler kan nur in genau 1 Klasse sein
+8)  jede Klasse hat genau 1 Klassenlehrer, dieser muss an der gleichen Schule unterrichten

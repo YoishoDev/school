@@ -23,8 +23,7 @@ internal class School: Object {
     @objc dynamic var id = ObjectId.generate()
     @objc dynamic var name = ""
     //  an 1 Schule lernen 1 oder mehrere Schueler (1:n)
-    //  Liste der Schueler (List aus Package RealmSwift)
-    let students = List<Student>()
+    //  diese lernen in Klasse, welche der Schule zugeordnet sind
     //  an 1 Schule gibt es 1 oder mehrere Klassen (1:n)
     let schoolClasses = List<SchoolClass>()
     //  an 1 Schule unterrichten 1 oder mehrere Lehrer (1:n)
@@ -59,10 +58,8 @@ internal class Student: Object {
     @objc dynamic var id = ObjectId.generate()
     @objc dynamic var firstName = ""
     @objc dynamic var lastName = ""
-    //  1 Schueler kann (muss) in genau 1 Klasse sein (1:1)
+    //  die Schulklasse ist einer Schule zugeordnet
     @objc dynamic var schoolClass: SchoolClass?
-    //  1 Schueler kann (muss) genau 1 Schule besuchen (1:1)
-    @objc dynamic var school: School?
     
     override static func primaryKey() -> String? {
         return "id"
@@ -76,6 +73,8 @@ internal class SchoolClass: Object {
     @objc dynamic var name = ""
     //  1 Klasse sollte genau 1 Lehrer haben (1:1)
     @objc dynamic var classTeacher: Teacher? = nil
+    //  1 Klasse hat 1 oder mehrere Schueler
+    let student = List<Student>()
     
     override static func primaryKey() -> String? {
         return "id"

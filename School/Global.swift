@@ -18,6 +18,14 @@ let REMOVE_REALM_DATA = false
 //  with Realm Sync and anonymous authentication.
 let USE_REALM_SYNC = false
 
+//  Benutzereinstellungen
+internal struct UserSettingsKeys {
+    
+    static let LAST_USED_SCHOOL_NAME: String = "LastUsedSchoolName"
+    static let FIRST_RUN_STEP: String = "FirstRunStep"
+    
+}
+
 //  Standard-Dialoge
 public class ModalOptionDialog {
     

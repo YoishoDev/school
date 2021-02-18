@@ -68,6 +68,11 @@ class AddSchoolViewController: NSViewController {
                 //  neues Objekt vom Typ Schule erstellen
                 let school: School = School()
                 school.name = schoolNameTextField.stringValue
+                //  Problem: Notify ueber Realm bevor Schule neu zugewiesen
+                //  Aktualisierung der Benutzereinstellungen
+                //  wir wissen hier noch nicht, ob das Hinzufuegen erfolgreich sein wird
+                let userSettings = UserDefaults.standard
+                userSettings.set(school.name, forKey: UserSettingsKeys.LAST_USED_SCHOOL_NAME)
                 //  Transaktion beginnen
                 realm.beginWrite()
                 //  Objekt speichern
@@ -75,6 +80,7 @@ class AddSchoolViewController: NSViewController {
                 //  Transaktion abschliessen
                 try realm.commitWrite()
                 //  soeben erstellte Schule als aktuelle Schule setzen
+                //  Problem: Notify ueber Realm bevor Schule neu zugewiesen
                 mainViewController?.actualSchool = school
                 //  Fenster schliessen
                 self.view.window?.close()

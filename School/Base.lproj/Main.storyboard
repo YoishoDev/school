@@ -720,7 +720,7 @@
                                 </textFieldCell>
                             </textField>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="BJ4-dU-eeE">
-                                <rect key="frame" x="18" y="343" width="115" height="25"/>
+                                <rect key="frame" x="160" y="270" width="115" height="25"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <textFieldCell key="cell" lineBreakMode="truncatingTail" alignment="right" title="Anzahl Klassen:" id="aLj-7a-1pg">
                                     <font key="font" usesAppearanceFont="YES"/>
@@ -729,7 +729,7 @@
                                 </textFieldCell>
                             </textField>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="lS5-jq-Euv">
-                                <rect key="frame" x="149" y="343" width="115" height="25"/>
+                                <rect key="frame" x="295" y="270" width="115" height="25"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <textFieldCell key="cell" lineBreakMode="truncatingTail" alignment="left" id="e4P-Td-8iX">
                                     <font key="font" usesAppearanceFont="YES"/>
@@ -738,7 +738,7 @@
                                 </textFieldCell>
                             </textField>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="4ma-Fl-PDM">
-                                <rect key="frame" x="18" y="293" width="115" height="25"/>
+                                <rect key="frame" x="160" y="320" width="115" height="25"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <textFieldCell key="cell" lineBreakMode="truncatingTail" alignment="right" title="Anzahl Lehrer:" id="zCi-gZ-o7l">
                                     <font key="font" usesAppearanceFont="YES"/>
@@ -747,7 +747,7 @@
                                 </textFieldCell>
                             </textField>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="D89-K9-2Sk">
-                                <rect key="frame" x="149" y="293" width="115" height="25"/>
+                                <rect key="frame" x="295" y="320" width="115" height="25"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <textFieldCell key="cell" lineBreakMode="truncatingTail" alignment="left" id="yWS-X5-yFh">
                                     <font key="font" usesAppearanceFont="YES"/>
@@ -756,7 +756,7 @@
                                 </textFieldCell>
                             </textField>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="JoJ-iL-76b">
-                                <rect key="frame" x="18" y="243" width="115" height="25"/>
+                                <rect key="frame" x="160" y="370" width="115" height="25"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <textFieldCell key="cell" lineBreakMode="truncatingTail" alignment="right" title="Anzahl Fächer:" id="T3m-sd-l2I">
                                     <font key="font" usesAppearanceFont="YES"/>
@@ -765,7 +765,7 @@
                                 </textFieldCell>
                             </textField>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="xcf-uJ-7QX">
-                                <rect key="frame" x="149" y="243" width="115" height="25"/>
+                                <rect key="frame" x="295" y="370" width="115" height="25"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <textFieldCell key="cell" lineBreakMode="truncatingTail" alignment="left" id="XoB-yz-8Wg">
                                     <font key="font" usesAppearanceFont="YES"/>
@@ -785,20 +785,20 @@
                                 </connections>
                             </button>
                             <button verticalHuggingPriority="750" id="mqz-1L-gsV">
-                                <rect key="frame" x="342" y="342" width="118" height="32"/>
+                                <rect key="frame" x="500" y="220" width="118" height="32"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
-                                <buttonCell key="cell" type="push" title="Hinzufügen" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="R2x-dk-Lmf">
+                                <buttonCell key="cell" type="push" title="Hinzufügen" bezelStyle="rounded" alignment="center" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="R2x-dk-Lmf">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
                                 <connections>
-                                    <segue destination="TDn-PS-tAP" kind="modal" identifier="Main2SchoolClassSeque" id="pFj-sy-lqi"/>
+                                    <segue destination="t9N-vR-rpm" kind="modal" identifier="Main2AddStudentViewSeque" id="DYQ-5p-b2E"/>
                                 </connections>
                             </button>
                             <button verticalHuggingPriority="750" id="TII-O1-6Y9">
-                                <rect key="frame" x="342" y="293" width="118" height="32"/>
+                                <rect key="frame" x="500" y="320" width="118" height="32"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
-                                <buttonCell key="cell" type="push" title="Hinzufügen" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="xq7-5d-Zjt">
+                                <buttonCell key="cell" type="push" title="Hinzufügen" bezelStyle="rounded" alignment="center" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="xq7-5d-Zjt">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
@@ -807,9 +807,9 @@
                                 </connections>
                             </button>
                             <button verticalHuggingPriority="750" id="PBD-14-dpV">
-                                <rect key="frame" x="342" y="243" width="118" height="32"/>
+                                <rect key="frame" x="500" y="370" width="118" height="32"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
-                                <buttonCell key="cell" type="push" title="Hinzufügen" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="YPD-ev-ctQ">
+                                <buttonCell key="cell" type="push" title="Hinzufügen" bezelStyle="rounded" alignment="center" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="YPD-ev-ctQ">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
@@ -818,7 +818,7 @@
                                 </connections>
                             </button>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="w3b-z4-4z9">
-                                <rect key="frame" x="18" y="193" width="115" height="25"/>
+                                <rect key="frame" x="160" y="220" width="115" height="25"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <textFieldCell key="cell" lineBreakMode="truncatingTail" alignment="right" title="Anzahl Schüler:" id="uX5-nI-ODv">
                                     <font key="font" usesAppearanceFont="YES"/>
@@ -827,7 +827,7 @@
                                 </textFieldCell>
                             </textField>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="Jm0-FU-lH6">
-                                <rect key="frame" x="149" y="191" width="115" height="25"/>
+                                <rect key="frame" x="295" y="220" width="115" height="25"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <textFieldCell key="cell" lineBreakMode="truncatingTail" alignment="left" id="oFC-14-mFk">
                                     <font key="font" usesAppearanceFont="YES"/>
@@ -836,14 +836,14 @@
                                 </textFieldCell>
                             </textField>
                             <button verticalHuggingPriority="750" id="bo4-7i-Qki">
-                                <rect key="frame" x="342" y="193" width="118" height="32"/>
+                                <rect key="frame" x="500" y="270" width="118" height="32"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
-                                <buttonCell key="cell" type="push" title="Hinzufügen" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="yjb-S0-DIn">
+                                <buttonCell key="cell" type="push" title="Hinzufügen" bezelStyle="rounded" alignment="center" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="yjb-S0-DIn">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
                                 <connections>
-                                    <segue destination="t9N-vR-rpm" kind="modal" identifier="Main2StudentsSeque" id="fTe-A5-Gre"/>
+                                    <segue destination="TDn-PS-tAP" kind="modal" identifier="Main2ClassViewSeque" id="3Wm-Yu-xlq"/>
                                 </connections>
                             </button>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" preferredMaxLayoutWidth="575" id="eZ0-CQ-wZr">
@@ -858,18 +858,74 @@
                             <comboBox verticalHuggingPriority="750" id="UVR-Dx-dWw">
                                 <rect key="frame" x="166" y="440" width="446" height="25"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
-                                <comboBoxCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" completes="NO" numberOfVisibleItems="3" id="jHd-0J-7D4">
+                                <comboBoxCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" completes="NO" numberOfVisibleItems="5" id="jHd-0J-7D4">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </comboBoxCell>
                             </comboBox>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="DQR-Fd-Mho">
+                                <rect key="frame" x="40" y="470" width="70" height="31"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <textFieldCell key="cell" lineBreakMode="clipping" alignment="center" title="1." drawsBackground="YES" id="SRR-Yg-Pvn">
+                                    <font key="font" textStyle="largeTitle" name=".SFNS-Regular"/>
+                                    <color key="textColor" name="systemRedColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <textField hidden="YES" horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3mj-et-7i6">
+                                <rect key="frame" x="668" y="371" width="70" height="31"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <textFieldCell key="cell" lineBreakMode="clipping" alignment="center" title="2." drawsBackground="YES" id="siU-7X-pSK">
+                                    <font key="font" textStyle="largeTitle" name=".SFNS-Regular"/>
+                                    <color key="textColor" name="systemRedColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <textField hidden="YES" horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dgH-YX-3VQ">
+                                <rect key="frame" x="668" y="321" width="70" height="31"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <textFieldCell key="cell" lineBreakMode="clipping" alignment="center" title="3." drawsBackground="YES" id="FtF-nj-93c">
+                                    <font key="font" textStyle="largeTitle" name=".SFNS-Regular"/>
+                                    <color key="textColor" name="systemRedColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <textField hidden="YES" horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cKp-2v-mUh">
+                                <rect key="frame" x="668" y="271" width="70" height="31"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <textFieldCell key="cell" lineBreakMode="clipping" alignment="center" title="4." drawsBackground="YES" id="d9y-2j-hwx">
+                                    <font key="font" textStyle="largeTitle" name=".SFNS-Regular"/>
+                                    <color key="textColor" name="systemRedColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <textField hidden="YES" horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="O1w-xp-MRD">
+                                <rect key="frame" x="668" y="221" width="70" height="31"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <textFieldCell key="cell" lineBreakMode="clipping" alignment="center" title="5." drawsBackground="YES" id="fxd-8g-bl1">
+                                    <font key="font" textStyle="largeTitle" name=".SFNS-Regular"/>
+                                    <color key="textColor" name="systemRedColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
                         </subviews>
                     </view>
                     <connections>
+                        <outlet property="addCourseButton" destination="PBD-14-dpV" id="LSJ-Pj-UfS"/>
+                        <outlet property="addSchoolClassButton" destination="bo4-7i-Qki" id="alG-G8-gkp"/>
+                        <outlet property="addStudentButton" destination="mqz-1L-gsV" id="qTX-Vj-SOb"/>
+                        <outlet property="addTeacherButton" destination="TII-O1-6Y9" id="8Bv-oq-H0d"/>
+                        <outlet property="countOfCourseLabel" destination="xcf-uJ-7QX" id="r0b-R4-duU"/>
                         <outlet property="countOfSchoolClassesLabel" destination="lS5-jq-Euv" id="I28-2e-xCI"/>
+                        <outlet property="countOfStudentsLabel" destination="Jm0-FU-lH6" id="pl0-Vy-wUL"/>
                         <outlet property="countOfTeacherLabel" destination="D89-K9-2Sk" id="h9g-6O-9l2"/>
+                        <outlet property="firstStepLabel" destination="DQR-Fd-Mho" id="4HR-Ve-GzN"/>
+                        <outlet property="fivedStepLabel" destination="O1w-xp-MRD" id="nC1-xs-5dx"/>
+                        <outlet property="fourthStepLabel" destination="cKp-2v-mUh" id="xhE-rB-Qxz"/>
                         <outlet property="schoolNameComboBox" destination="UVR-Dx-dWw" id="EMz-Vk-URn"/>
+                        <outlet property="secondStepLabel" destination="3mj-et-7i6" id="cLD-G6-rKW"/>
+                        <outlet property="thirdStepLabel" destination="dgH-YX-3VQ" id="9Nq-84-pJD"/>
                     </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
@@ -935,10 +991,10 @@
             </objects>
             <point key="canvasLocation" x="-1430" y="-1651"/>
         </scene>
-        <!--Add Student View Controller-->
+        <!--Schüler hinzufügen-->
         <scene sceneID="bpt-SG-hNW">
             <objects>
-                <viewController id="t9N-vR-rpm" customClass="AddStudentViewController" customModule="School" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Schüler hinzufügen" id="t9N-vR-rpm" customClass="AddStudentViewController" customModule="School" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="4Zq-BD-FKa">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="300"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -950,6 +1006,9 @@
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
+                                <connections>
+                                    <action selector="saveButtonClicked:" target="t9N-vR-rpm" id="l8c-Pi-tcV"/>
+                                </connections>
                             </button>
                             <button verticalHuggingPriority="750" id="uUg-da-gVh">
                                 <rect key="frame" x="398" y="42" width="143" height="32"/>
@@ -958,6 +1017,9 @@
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
+                                <connections>
+                                    <action selector="cancelButtonClicked:" target="t9N-vR-rpm" id="FIZ-An-cBv"/>
+                                </connections>
                             </button>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="kjc-p5-Rkv">
                                 <rect key="frame" x="40" y="257" width="83" height="21"/>
@@ -1015,10 +1077,15 @@
                             </comboBox>
                         </subviews>
                     </view>
+                    <connections>
+                        <outlet property="schoolClassComboBox" destination="fSE-Gh-HF8" id="PAp-zi-EwN"/>
+                        <outlet property="studentFirstNameTextField" destination="6T7-fV-9YB" id="Tgn-8b-CtE"/>
+                        <outlet property="studentLastNameTextField" destination="VU4-yO-XSv" id="7O7-w2-fkU"/>
+                    </connections>
                 </viewController>
                 <customObject id="y3f-S7-0eI" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-799" y="-1283"/>
+            <point key="canvasLocation" x="-640" y="-1938"/>
         </scene>
         <!--Fach hinzufügen-->
         <scene sceneID="IKm-4W-bzA">
@@ -1076,7 +1143,7 @@
                 </viewController>
                 <customObject id="Utz-AO-WZW" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-799" y="-1600"/>
+            <point key="canvasLocation" x="-799" y="-1651"/>
         </scene>
         <!--Klasse hinzufügen-->
         <scene sceneID="Q38-AR-Ffm">
@@ -1153,7 +1220,7 @@
                 </viewController>
                 <customObject id="jFM-OD-FGX" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1430" y="-1333"/>
+            <point key="canvasLocation" x="-1418" y="-1327"/>
         </scene>
         <!--Lehrer hinzufügen-->
         <scene sceneID="8gh-vI-N7A">
@@ -1299,10 +1366,11 @@
                 </viewController>
                 <customObject id="yAJ-5q-SOB" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1430" y="-964"/>
+            <point key="canvasLocation" x="-1418" y="-950"/>
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
+        <segue reference="TDF-nK-emM"/>
         <segue reference="TEn-Jh-Tdp"/>
     </inferredMetricsTieBreakers>
 </document>

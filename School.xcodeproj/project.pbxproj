@@ -25,6 +25,7 @@
 		455AD6A025DD2D4000644689 /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = 455AD69F25DD2D4000644689 /* Realm */; };
 		455AD6A225DD2D4000644689 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 455AD6A125DD2D4000644689 /* RealmSwift */; };
 		455AD6A525DD2E2200644689 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 455AD6A425DD2E2200644689 /* Assets.xcassets */; };
+		45BD1A1D25DE36E000DF1C96 /* LastCommit in Resources */ = {isa = PBXBuildFile; fileRef = 45BD1A1C25DE36E000DF1C96 /* LastCommit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -47,6 +48,7 @@
 		455AD69025DD1F9D00644689 /* REALM.LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = REALM.LICENSE; sourceTree = "<group>"; };
 		455AD69725DD1FAC00644689 /* APACHE.LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = APACHE.LICENSE; sourceTree = "<group>"; };
 		455AD6A425DD2E2200644689 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = ../../RealmTestView/RealmTestView/Assets.xcassets; sourceTree = "<group>"; };
+		45BD1A1C25DE36E000DF1C96 /* LastCommit */ = {isa = PBXFileReference; lastKnownFileType = text; path = LastCommit; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -102,6 +104,7 @@
 			children = (
 				454757D025DD7CD500176974 /* ClassDiagram.pdf */,
 				455AD67525DD1F7400644689 /* notes */,
+				45BD1A1C25DE36E000DF1C96 /* LastCommit */,
 			);
 			path = docs;
 			sourceTree = "<group>";
@@ -198,6 +201,7 @@
 				455AD69125DD1F9D00644689 /* REALM.LICENSE in Resources */,
 				454757D125DD7CD500176974 /* ClassDiagram.pdf in Resources */,
 				455AD69825DD1FAC00644689 /* APACHE.LICENSE in Resources */,
+				45BD1A1D25DE36E000DF1C96 /* LastCommit in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

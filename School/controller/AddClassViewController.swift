@@ -14,7 +14,10 @@ import RealmSwift
 class AddClassViewController: NSViewController {
 
     //  aktuelle Schule, aus MainViewController uebergeben
-    internal var inViewSelectedSchool:School?
+    internal var actualSchool:School?
+    
+    //  Liste der moeglichen (Klassen-) Lehrer
+    internal var actualSchoolTeacherList = [Teacher]()
     
     //  View-Elemente
     @IBOutlet weak var classNameTextField: NSTextField!
@@ -26,17 +29,18 @@ class AddClassViewController: NSViewController {
         
         //  Liste von (moeglichen) Klassenlehrern laden
         //  muessen an der gleichen Schule auch unterrichten
-        if let teacherList = inViewSelectedSchool?.teacher {
+        if let teacherList = actualSchool?.teacher {
         
             if !teacherList.isEmpty {
             
                 for teacher in teacherList {
-                        
-                    classTeacherComboBox.addItem(withObjectValue: teacher.firstName + " " + teacher.lastName)
-                        
-                }
                     
-                classTeacherComboBox.selectItem(at: 0)
+                    //  Auswahlbox befuellen, Annahme: Index Box und Array ist gleich
+                    actualSchoolTeacherList.append(teacher)
+                    classTeacherComboBox.addItem(withObjectValue: teacher.firstName + " " + teacher.lastName)
+                    
+                }
+
             }
             
         }
@@ -44,6 +48,17 @@ class AddClassViewController: NSViewController {
     }
     
     @IBAction func saveButtonClicked(_ sender: NSButton) {
+        
+        if classTeacherComboBox.indexOfSelectedItem < 0 {
+            
+            //  Hinweis
+            let dialog = ModalOptionDialog(message: "Sie haben keinen Klassenlehrer ausgewählt!",
+                                           buttonStyle: ModalOptionDialog.ButtonStyle.OK_OPTION,
+                                           dialogStyle: ModalOptionDialog.DialogStyle.WARNING)
+            dialog.showDialog()
+            return
+            
+        }
         
         if classNameTextField.stringValue.isEmpty {
             
@@ -56,17 +71,29 @@ class AddClassViewController: NSViewController {
         } else {
             
             // Klasse der Schule laden
-            if let schoolClasses = inViewSelectedSchool?.schoolClasses {
+            if let schoolClassList = actualSchool?.schoolClasses {
                 
-                //  pruefen, ob schon die Klasse schon an der Schule vorhanden ist
-                //  ueber Namen
-                if !schoolClasses.isEmpty {
+                if !schoolClassList.isEmpty {
                     
-                    //  Keine Klassen zugeordnet
-                    //  Klasse speichern, Name kann an anderer Schule existieren
-                    //  bekommt als Objekt aber eine eindeutige ID
+                    //  pruefen, ob schon vorhanden
+                    //  ueber Namen
+                    //
+                    for schoolClass in schoolClassList {
+                        
+                        if schoolClass.name.lowercased() == classNameTextField.stringValue.lowercased() {
+                            
+                            let dialog = ModalOptionDialog(message: "Eine Klasse mit diesem Namen existiert bereits an der Schule!",
+                                                           buttonStyle: ModalOptionDialog.ButtonStyle.OK_OPTION,
+                                                           dialogStyle: ModalOptionDialog.DialogStyle.WARNING)
+                            dialog.showDialog()
+                            return
+                        }
+                        
+                    }
                     
-                    do {
+                }
+                //  Klasse speichern
+                do {
                         
                         //  Realm initialisieren
                         let realm = try Realm()
@@ -77,8 +104,10 @@ class AddClassViewController: NSViewController {
                         realm.beginWrite()
                         //  Klasse speichern
                         realm.add(schoolClass)
-                        //  Klasse der Schule hinzufuegen, ueber definierte Relation in Realm
-                        inViewSelectedSchool?.schoolClasses.append(schoolClass)
+                        //  Klasse der Schule zuordnen
+                        actualSchool?.schoolClasses.append(schoolClass)
+                        //  Klassenlehrer zuordnen
+                        schoolClass.classTeacher = actualSchoolTeacherList[classTeacherComboBox.indexOfSelectedItem]
                         //  Transaktion abschliessen
                         try realm.commitWrite()
                         //  Fenster schliessen
@@ -93,8 +122,6 @@ class AddClassViewController: NSViewController {
                         
                     }
                     
-                }
-                
             }
             
         }
