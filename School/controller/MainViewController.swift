@@ -284,6 +284,7 @@ class MainViewController: NSViewController {
                     schoolNameComboBox.addItem(withObjectValue: school.name)
                     if lastActualSchoolName.uppercased() == school.name.uppercased() {
                         
+                        actualSchool = school
                         schoolNameComboBox.selectItem(at: index)
                         isSelected = true
                         
