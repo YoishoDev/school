@@ -14,13 +14,17 @@ import RealmSwift
 class MainViewController: NSViewController {
 
     //  aktuelle Schule, fuer Uebergabe an andere Controller
-    internal var actualSchool:School?
+    internal var actualSchool: School?
+    //  unsere Daten
+    private var schoolList: Results<School>?
+    private var courseList: Results<Course>?
     
-    //  zuletzt bearbeitete Schule speichern
-    internal let userSettings = UserDefaults.standard
+    //  Benutzer- und Programmeinstellungen speichern
+    private var userSettings = UserDefaults.standard
     
     //  Benachrichtigungen bei Aenderungen in der "Datenbank"
-    private var realmNotificationToken: NotificationToken?
+    private var realmAllNotificationsToken: NotificationToken?
+    private var realmSchoolCollectionNotificationToken: NotificationToken?
     
     //  View-Elemente
     @IBOutlet weak var schoolNameComboBox: NSComboBox!
@@ -40,104 +44,53 @@ class MainViewController: NSViewController {
     @IBOutlet weak var addSchoolClassButton: NSButton!
     @IBOutlet weak var addStudentButton: NSButton!
     
-    //  Label fuer die ersten Schritte
+    //  Label und Variablen fuer die ersten Schritte
+    //  bei jeder neuen Schule wieder aktivieren
     private var isFirstStepCompleted: Bool = false
     private var firstStepLabelList = [NSTextField]()
     private var firstStepButtonList = [NSButton]()
     
-    //  bei Aenderungen an der "Datenbank" die View aktualisieren
-    //  ueber LinkedObjects wird z.B. der Lehrer in der Schule automatisch eingetragen
-    //  leider wird diese Aenderung scheinbar nicht "benachrichtigt"?
-    //  https://github.com/realm/realm-cocoa/issues/7054
-    private func updateView(_ notification: Realm.Notification, _ realm: Realm) {
+    // Aktualisierung der View - Schulen
+    private func updateSchoolComboBox() {
         
-        //  Auswahlbox neu befuellen
-        let schoolList = realm.objects(School.self)
-        if !schoolList.isEmpty {
-           
-            //  es wurde eine Schule angelegt -> erste Schritte Stufe 2
-            if !isFirstStepCompleted {
-                
-                userSettings.set(2, forKey: UserSettingsKeys.FIRST_RUN_STEP)
-                updateFirstStepLabel(firstStepValue: 2)
-                
-            }
-
-            schoolNameComboBox.removeAllItems()
+        var index: Int = 0
+        var isSelected: Bool = false
+        let actualSchoolName = userSettings.string(forKey: UserSettingsKeys.LAST_USED_SCHOOL_NAME) ?? ""
+        //  wurde eine Schule neu angelegt?
+        if schoolNameComboBox.numberOfItems < schoolList?.count ?? 0 {
             
-            var index:Int = 0
-            for school in schoolList {
-
-                //  Eintrag zur Auswahlbox hinzufuegen
-                schoolNameComboBox.addItem(withObjectValue: school.name)
-                //  zuletzt genutze Schule (ueber Namen) laden und selektieren
-                //  Problem: Notify bevor Schule aus AddSchoolView neu zugewiesen
-                let lastUsedSchoolName = userSettings.string(forKey: UserSettingsKeys.LAST_USED_SCHOOL_NAME)
-                if !(lastUsedSchoolName?.isEmpty ?? true) {
-                    if lastUsedSchoolName?.uppercased() == school.name.uppercased() {
-                            
-                            schoolNameComboBox.selectItem(at: index)
-                            
-                    }
-                } else {
+            for school in schoolList! {
+                
+                if actualSchoolName.uppercased() == school.name.uppercased() {
                     
-                    //  ansonsten erste Schule der Liste als aktuelle setzen
-                    schoolNameComboBox.selectItem(at: 0)
                     actualSchool = school
+                    schoolNameComboBox.addItem(withObjectValue: school.name)
+                    schoolNameComboBox.selectItem(at: index)
+                    isSelected = true
                     
                 }
                 index += 1
-            }
-            
-            //  Anzahl der Faecher anzeigen
-            let courseList = realm.objects(Course.self)
-            if !courseList.isEmpty {
-                
-                countOfCourseLabel.stringValue = String(courseList.count)
-                //  es wurde ein Fach angelegt -> erste Schritte Stufe 3
-                if !isFirstStepCompleted { updateFirstStepLabel(firstStepValue: 3) }
-                userSettings.set(3, forKey: UserSettingsKeys.FIRST_RUN_STEP)
                 
             }
             
-            //  Anzahl der zugeordneten Lehrer anzeigen
-            let teacherCount = actualSchool?.teacher.count ?? 0
-            countOfTeacherLabel.stringValue = String(teacherCount)
-            //  es wurde ein Lehrer angelegt -> erste Schritte Stufe 4
-            if !isFirstStepCompleted && teacherCount > 0 {
+            if !isSelected {
                 
-                userSettings.set(4, forKey: UserSettingsKeys.FIRST_RUN_STEP)
-                updateFirstStepLabel(firstStepValue: 4)
+                schoolNameComboBox.selectItem(at: index)
                 
             }
+            userSettings.set(2, forKey: UserSettingsKeys.FIRST_RUN_STEP)
+            updateFirstStepLabel(firstStepValue: 2)
             
-            //  Anzahl der zugeordneten Klassen anzeigen
-            let schoolClassCount = actualSchool?.schoolClasses.count ?? 0
-            countOfTeacherLabel.stringValue = String(schoolClassCount)
-            //  es wurde eine Klasse angelegt -> erste Schritte Stufe 5
-            if !isFirstStepCompleted && schoolClassCount > 0 {
-                
-                userSettings.set(5, forKey: UserSettingsKeys.FIRST_RUN_STEP)
-                updateFirstStepLabel(firstStepValue: 5)
-                
-            }
+        } else {
             
-            //  Anzahl der zugeordneten Schueler anzeigen
-            var studentsCount: Int = 0
-            if let schoolClassList = actualSchool?.schoolClasses {
+            //  neue Schule in Auswahlbox gewaehlt?
+            for school in schoolList! {
                 
-                for schoolClass in schoolClassList {
-                
-                    studentsCount += schoolClass.student.count
-            
+                if school.name.uppercased() == actualSchoolName.uppercased() {
+                    
+                    actualSchool = school
+                    
                 }
-            }
-            countOfStudentsLabel.stringValue = String(studentsCount)
-            //  es wurde eine Klasse angelegt -> erste Schritte Stufe 99
-            if !isFirstStepCompleted && studentsCount > 0 {
-                
-                userSettings.set(99, forKey: UserSettingsKeys.FIRST_RUN_STEP)
-                updateFirstStepLabel(firstStepValue: 99)
                 
             }
             
@@ -145,6 +98,70 @@ class MainViewController: NSViewController {
         
     }
     
+    //  Aktualisierung der View - Faecher, Klassen und Schuler
+    private func updateView() {
+        
+        //  Anzahl der Faecher anzeigen
+        countOfCourseLabel.stringValue = String(courseList?.count ?? 0)
+        if !isFirstStepCompleted {
+           
+            if courseList?.count ?? 0 > 0 {
+            
+                userSettings.set(3, forKey: UserSettingsKeys.FIRST_RUN_STEP)
+                updateFirstStepLabel(firstStepValue: 3)
+                
+            }
+            
+        }
+        
+        //  Anzahl der zugeordneten Lehrer anzeigen
+        let teacherCount = actualSchool?.teacher.count ?? 0
+        countOfTeacherLabel.stringValue = String(teacherCount)
+        
+        if !isFirstStepCompleted {
+            
+            //  es wurde ein Lehrer angelegt -> erste Schritte Stufe 4
+            if teacherCount > 0 && userSettings.integer(forKey: UserSettingsKeys.FIRST_RUN_STEP) == 3 {
+                
+                userSettings.set(4, forKey: UserSettingsKeys.FIRST_RUN_STEP)
+                updateFirstStepLabel(firstStepValue: 4)
+                
+            }
+            
+        }
+        
+        //  Anzahl der zugeordneten Klassen anzeigen
+        let schoolClassCount = actualSchool?.schoolClasses.count ?? 0
+        countOfSchoolClassesLabel.stringValue = String(schoolClassCount)
+        //  es wurde eine Klasse angelegt -> erste Schritte Stufe 5
+        if !isFirstStepCompleted && schoolClassCount > 0 {
+            
+            userSettings.set(5, forKey: UserSettingsKeys.FIRST_RUN_STEP)
+            updateFirstStepLabel(firstStepValue: 5)
+            
+        }
+        
+        //  Anzahl der zugeordneten Schueler anzeigen
+        var studentsCount: Int = 0
+        if let schoolClassList = actualSchool?.schoolClasses {
+            
+            for schoolClass in schoolClassList {
+            
+                studentsCount += schoolClass.student.count
+        
+            }
+        }
+        countOfStudentsLabel.stringValue = String(studentsCount)
+        //  es wurde eine Klasse angelegt -> erste Schritte Stufe 99
+        if !isFirstStepCompleted && studentsCount > 0 {
+            
+            userSettings.set(99, forKey: UserSettingsKeys.FIRST_RUN_STEP)
+            updateFirstStepLabel(firstStepValue: 99)
+            
+        }
+
+    }
+
     private func updateFirstStepLabel(firstStepValue: Int) {
         
         //  erste Schritte - Label je nach Stufe ausblenden
@@ -159,16 +176,21 @@ class MainViewController: NSViewController {
             switch firstStepValue {
             case 1:
                 for index in 1...4 { firstStepLabelList[index].isHidden = true }
+                for index in 0...3 { firstStepButtonList[index].isEnabled = false }
             case 2:
                 for index in 2...4 { firstStepLabelList[index].isHidden = true }
                 firstStepLabel.isHidden = true
                 secondStepLabel.isHidden = false
+                for index in 1...3 { firstStepButtonList[index].isEnabled = false }
                 addCourseButton.isEnabled = true
             case 3:
                 for index in 0...1 { firstStepLabelList[index].isHidden = true }
                 for index in 3...4 { firstStepLabelList[index].isHidden = true }
                 thirdStepLabel.isHidden = false
                 for index in 0...1 { firstStepButtonList[index].isEnabled = true }
+                addTeacherButton.isEnabled = true
+                for index in 2...3 { firstStepButtonList[index].isEnabled = false }
+                
             case 4:
                 for index in 0...2 { firstStepLabelList[index].isHidden = true }
                 fourthStepLabel.isHidden = false
@@ -191,123 +213,197 @@ class MainViewController: NSViewController {
         
         super.viewDidLoad()
         
-        //  erste Schritte
-        if userSettings.integer(forKey: UserSettingsKeys.FIRST_RUN_STEP) > 5 {
-            
-            isFirstStepCompleted = true
-            
-        }
+        //  Label fuer die resten Schritte
         firstStepLabelList = [firstStepLabel, secondStepLabel, thirdStepLabel, fourthStepLabel, fivedStepLabel]
         firstStepButtonList = [addCourseButton, addTeacherButton, addSchoolClassButton, addStudentButton]
 
-        //  GUI mit (vorhandenen) Daten befuellen
+        //  "Datenbank" - Realm initialisieren
+        //  waehrend der Entwicklung bei Schema-Aenderungen alle bisherigen Daten loeschen
         do {
             
-            //  Realm initialisieren
-            //  waehrend der Entwicklung bei Schema-Aenderungen alle bisherigen Daten loeschen
             let configuration = Realm.Configuration(deleteRealmIfMigrationNeeded: true)
             let realm = try Realm(configuration: configuration)
             
-            //  fuer Tests
+            //  Daten loeschen - fuer Test und Entwicklung
             if REMOVE_REALM_DATA {
                 
                 realm.beginWrite()
-                //  alle Objekte loeschen
                 realm.deleteAll()
-                //  Transaktion abschliessen
                 try realm.commitWrite()
-                //  esrte Schritte aktivieren
-                userSettings.setValue(1, forKey: UserSettingsKeys.FIRST_RUN_STEP)
+                //  Erste Schritte aktivieren - Stufe 1 (Schule anlegen)
+                isFirstStepCompleted = false
+                userSettings.set(1, forKey: UserSettingsKeys.FIRST_RUN_STEP)
                 //  Hinweis an Nutzer
-                let dialog = ModalOptionDialog(message: "Alle Daten wurden gelöscht! Konfiguration prüfen!",
+                let dialog = ModalOptionDialog(message: "Alle Daten wurden gelöscht! Bitte Konfiguration anpassen!",
                                                buttonStyle: ModalOptionDialog.ButtonStyle.OK_OPTION,
                                                dialogStyle: ModalOptionDialog.DialogStyle.WARNING)
                 dialog.showDialog()
                 
             }
             
-            //  Schulen laden und in Auswahlbox darstellen
-            let schoolList = realm.objects(School.self)
-            if !schoolList.isEmpty {
-               
+            //  Daten initialsieren
+            schoolList = realm.objects(School.self)
+            courseList = realm.objects(Course.self)
+            
+            //  Stufe der ersten Schritte ermitteln
+            // und View entsprechend anpassen
+            switch userSettings.integer(forKey: UserSettingsKeys.FIRST_RUN_STEP) {
+            case 1:
+                isFirstStepCompleted = false
+                updateFirstStepLabel(firstStepValue: 1)
+            case 2:
+                isFirstStepCompleted = false
+                updateFirstStepLabel(firstStepValue: 2)
+            case 3:
+                isFirstStepCompleted = false
+                updateFirstStepLabel(firstStepValue: 3)
+            case 4:
+                isFirstStepCompleted = false
+                updateFirstStepLabel(firstStepValue: 4)
+            case 5:
+                isFirstStepCompleted = false
+                updateFirstStepLabel(firstStepValue: 5)
+            case 99:
+                isFirstStepCompleted = true
+                updateFirstStepLabel(firstStepValue: 99)
+            default:
+                isFirstStepCompleted = false
+                updateFirstStepLabel(firstStepValue: 1)
+                userSettings.setValue(1, forKey: UserSettingsKeys.FIRST_RUN_STEP)
+                
+            }
+            
+            //  Auswahlbox initialisieren
+            if !(schoolList?.isEmpty ?? true) {
+                
                 var index: Int = 0
+                let lastActualSchoolName = userSettings.string(forKey: UserSettingsKeys.LAST_USED_SCHOOL_NAME) ?? ""
                 var isSelected: Bool = false
-                for school in schoolList {
-
-                    //  Eintrag zur Auswahlbox hinzufuegen
+                for school in schoolList! {
+                    
                     schoolNameComboBox.addItem(withObjectValue: school.name)
-                    //  zuletzt genutze Schule (ueber Namen) laden und selektieren
-                    let lastUsedSchoolName = userSettings.string(forKey: UserSettingsKeys.LAST_USED_SCHOOL_NAME)
-                    if !(lastUsedSchoolName?.isEmpty ?? true) {
+                    if lastActualSchoolName.uppercased() == school.name.uppercased() {
                         
-                        if school.name.uppercased() == lastUsedSchoolName?.uppercased() {
-                            
-                            actualSchool = school
-                            schoolNameComboBox.selectItem(at: index)
-                            isSelected = true
-                            
-                        }
+                        schoolNameComboBox.selectItem(at: index)
+                        isSelected = true
                         
                     }
-                    
                     index += 1
-
-                }
-                
-                //  ansonsten erste Schule aus Liste als aktuelle Schule setzen und selektieren
-                if !isSelected {
-                    
-                    schoolNameComboBox.selectItem(at: 0)
-                    actualSchool = schoolList[0]
                     
                 }
-                //  Anzahl der zugeordneten Klassen anzeigen
-                countOfSchoolClassesLabel.stringValue = String(actualSchool?.schoolClasses.count ?? 0)
-                
-                //  Anzahl der zugeordneten Lehrer anzeigen
-                countOfTeacherLabel.stringValue = String(actualSchool?.teacher.count ?? 0)
+                if !isSelected { schoolNameComboBox.selectItem(at: index) }
             }
-           
+            /* Bug? Funktioniert nicht aus modalen Views
+            https://github.com/realm/realm-cocoa/issues/7054
+            //  Realm-Benachrichtigungen, hier Schule
+            realmSchoolCollectionNotificationToken = schoolList.observe { [weak self] (changes: RealmCollectionChange) in
+                
+                print("Notify")
+                
+                switch changes {
+                case .initial:
+                    return
+                case .update(_, deletions: _, insertions: let insertions, modifications: _):
+                    
+                    //  (_, deletions: let deletions, insertions: let insertions, modifications: let modifications)
+                    if insertions.count > 0 {
+                        
+                        //  Objekte vom Typ Schule wurden hinzugefuegt
+                        self?.isFirstStepCompleted = false
+                        self?.userSettings.set(2, forKey: UserSettingsKeys.FIRST_RUN_STEP)
+                        self?.updateView(schoolList)
+                    }
+                case .error(let error):
+                    
+                    let dialog = ModalOptionDialog(message: error.localizedDescription,
+                                                   buttonStyle: ModalOptionDialog.ButtonStyle.OK_OPTION,
+                                                   dialogStyle: ModalOptionDialog.DialogStyle.CRITICAL)
+                    dialog.showDialog()
+                
+                }
+                
+            }
+            
+            //  Realm-Benachrichtigungen, hier Faecher
+            realmSchoolCollectionNotificationToken = courseList.observe { [weak self] (changes: RealmCollectionChange) in
+                
+                switch changes {
+                case .initial:
+                    return
+                case .update(_, deletions: _, insertions: let insertions, modifications: _):
+                    
+                    //  (_, deletions: let deletions, insertions: let insertions, modifications: let modifications)
+                    if insertions.count > 0 {
+                        
+                        //  Objekte vom Typ Faecher wurden hinzugefuegt
+                        if self?.userSettings.integer(forKey: UserSettingsKeys.FIRST_RUN_STEP) == 1 {
+                            
+                            self?.userSettings.set(2, forKey: UserSettingsKeys.FIRST_RUN_STEP)
+                            
+                        }
+                        self?.updateView(courseList)
+                    }
+                case .error(let error):
+                    
+                    let dialog = ModalOptionDialog(message: error.localizedDescription,
+                                                   buttonStyle: ModalOptionDialog.ButtonStyle.OK_OPTION,
+                                                   dialogStyle: ModalOptionDialog.DialogStyle.CRITICAL)
+                    dialog.showDialog()
+                
+                }
+                
+            }
+            
+            //  Realm-Benachrichtigungen, hier Lehrer
+            realmSchoolCollectionNotificationToken = teacherList.observe { [weak self] (changes: RealmCollectionChange) in
+                
+                switch changes {
+                case .initial:
+                    return
+                case .update(_, deletions: _, insertions: let insertions, modifications: _):
+                    
+                    //  (_, deletions: let deletions, insertions: let insertions, modifications: let modifications)
+                    if insertions.count > 0 {
+                        
+                        //  Objekte vom Typ Lehrer wurden hinzugefuegt
+                        self?.userSettings.set(4, forKey: UserSettingsKeys.FIRST_RUN_STEP)
+                        self?.updateView(teacherList)
+                    }
+                case .error(let error):
+                    
+                    let dialog = ModalOptionDialog(message: error.localizedDescription,
+                                                   buttonStyle: ModalOptionDialog.ButtonStyle.OK_OPTION,
+                                                   dialogStyle: ModalOptionDialog.DialogStyle.CRITICAL)
+                    dialog.showDialog()
+                
+                }
+                
+            }
+             */
+            
+            //  Realm-Benachrichtigungen, hier alle Aenderungen
+            realmAllNotificationsToken = realm.observe { notification, realm in
+            
+                //  Views aktualisieren
+                self.updateView()
+                self.updateSchoolComboBox()
+                
+            }
+            //  View initialisieren
+            updateView()
             //  auf Aenderungen in der Auswahlbox (selbst) reagieren (extension:)
             schoolNameComboBox.delegate = self
-            
-            //  Anzahl der Faecher anzeigen
-            let courseList = realm.objects(Course.self)
-            if !courseList.isEmpty {
-                
-                countOfCourseLabel.stringValue = String(courseList.count)
-                
-            }
-            
-            //  Anzahl der zugeordneten Schueler anzeigen
-            if !(actualSchool?.schoolClasses.isEmpty ?? true) {
-                
-                //  Test Realm-Query
-                //  SELECT * FROM Students WHERE SchoolClass.name IN
-                //          (SELECT SchoolClass.name FROM School WHERE name = "")
-                //  
-                
-            }
-            //countOfStudentsLabel.stringValue = String(actualSchool?.schoolClasses.count ?? 0)
-            
-            //  Realm-Benachrichtigungen, hier komplett
-            realmNotificationToken = realm.observe { notification, realm in
-                
-                self.updateView(notification, realm)
-            }
-            
+        
         } catch {
             
+            //  Fehler beim Zugriff auf die "Datenbank"
             let dialog = ModalOptionDialog(message: error.localizedDescription,
                                            buttonStyle: ModalOptionDialog.ButtonStyle.OK_OPTION,
                                            dialogStyle: ModalOptionDialog.DialogStyle.CRITICAL)
             dialog.showDialog()
             
         }
-        
-        //  initial je nach Stufe die GUI anpassen
-        updateFirstStepLabel(firstStepValue: userSettings.integer(forKey: UserSettingsKeys.FIRST_RUN_STEP))
-        
+ 
     }
     
     //  wird vor Uebergabe an naechsten Controller aufgerufen
@@ -360,7 +456,8 @@ class MainViewController: NSViewController {
 
     override func viewDidDisappear() {
         
-        realmNotificationToken?.invalidate()
+        realmAllNotificationsToken?.invalidate()
+        realmSchoolCollectionNotificationToken?.invalidate()
         
     }
 
@@ -373,45 +470,15 @@ extension MainViewController: NSComboBoxDelegate {
     internal func comboBoxSelectionDidChange(_ notification: Notification) {
     
         if let schoolName = schoolNameComboBox.objectValueOfSelectedItem as? String {
-            
-            //  aktuelle Schule aus Realm laden
-            do {
-                
-                //  Realm initialisieren
-                let realm = try Realm()
-                //  Schulen laden
-                let schoolList = realm.objects(School.self)
-                //  nach Namen filtern
-                let filterString = "name == '" + schoolName + "'"
-                let filteredResultSet = schoolList.filter(filterString)
-                if filteredResultSet.count == 1 {
-                    
-                    actualSchool = filteredResultSet[0]
-                    //  in Settings speichern
-                    userSettings.set(actualSchool?.name, forKey: UserSettingsKeys.LAST_USED_SCHOOL_NAME)
-                    //  View aktualisieren
-                    countOfTeacherLabel.stringValue = String(actualSchool?.teacher.count ?? 0)
-                    
-                } else {
-                    
-                    let dialog = ModalOptionDialog(message: "Schuldaten konnten nicht geladen werden!",
-                                                   buttonStyle: ModalOptionDialog.ButtonStyle.OK_OPTION,
-                                                   dialogStyle: ModalOptionDialog.DialogStyle.CRITICAL)
-                    dialog.showDialog()
-                    
-                }
-                
-            } catch {
-                
-                let dialog = ModalOptionDialog(message: error.localizedDescription,
-                                               buttonStyle: ModalOptionDialog.ButtonStyle.OK_OPTION,
-                                               dialogStyle: ModalOptionDialog.DialogStyle.CRITICAL)
-                dialog.showDialog()
-                
-            }
-            
-        }
         
+            //  Namen der aktuellen Schule speicherm
+            userSettings.set(schoolName, forKey: UserSettingsKeys.LAST_USED_SCHOOL_NAME)
+            //  View aktualisieren
+            updateSchoolComboBox()
+            updateView()
+                    
+        }
+
     }
     
 }

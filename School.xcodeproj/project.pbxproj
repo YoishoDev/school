@@ -26,6 +26,7 @@
 		455AD6A225DD2D4000644689 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 455AD6A125DD2D4000644689 /* RealmSwift */; };
 		45BD1A1D25DE36E000DF1C96 /* LastCommit in Resources */ = {isa = PBXBuildFile; fileRef = 45BD1A1C25DE36E000DF1C96 /* LastCommit */; };
 		45BD1A2025DEE98500DF1C96 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 45BD1A1F25DEE98500DF1C96 /* Assets.xcassets */; };
+		45EB21FA25DF875E003AA76C /* toto in Resources */ = {isa = PBXBuildFile; fileRef = 45EB21F925DF875E003AA76C /* toto */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -49,6 +50,7 @@
 		455AD69725DD1FAC00644689 /* APACHE.LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = APACHE.LICENSE; sourceTree = "<group>"; };
 		45BD1A1C25DE36E000DF1C96 /* LastCommit */ = {isa = PBXFileReference; lastKnownFileType = text; path = LastCommit; sourceTree = "<group>"; };
 		45BD1A1F25DEE98500DF1C96 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		45EB21F925DF875E003AA76C /* toto */ = {isa = PBXFileReference; lastKnownFileType = text; path = toto; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,6 +107,7 @@
 				454757D025DD7CD500176974 /* ClassDiagram.pdf */,
 				455AD67525DD1F7400644689 /* notes */,
 				45BD1A1C25DE36E000DF1C96 /* LastCommit */,
+				45EB21F925DF875E003AA76C /* toto */,
 			);
 			path = docs;
 			sourceTree = "<group>";
@@ -201,6 +204,7 @@
 				454757D125DD7CD500176974 /* ClassDiagram.pdf in Resources */,
 				455AD69825DD1FAC00644689 /* APACHE.LICENSE in Resources */,
 				45BD1A2025DEE98500DF1C96 /* Assets.xcassets in Resources */,
+				45EB21FA25DF875E003AA76C /* toto in Resources */,
 				45BD1A1D25DE36E000DF1C96 /* LastCommit in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
