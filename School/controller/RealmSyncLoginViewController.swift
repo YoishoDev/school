@@ -84,25 +84,26 @@ class RealmSyncLoginViewController: NSViewController {
                     
                 case .success(let user):
                     print("Successfully logged in as user \(user)")
+                    let user = self.realmApp?.currentUser
+                    self.realmSyncConfiguration = user!.configuration(partitionValue: RealmAppSettings.PARTITION_KEY)
+                    
+                    Realm.asyncOpen(configuration: self.realmSyncConfiguration!) { result in
+                        switch result {
+                        case .failure(let error):
+                            let dialog = ModalOptionDialog(message: error.localizedDescription,
+                                                           buttonStyle: ModalOptionDialog.ButtonStyle.OK_OPTION,
+                                                           dialogStyle: ModalOptionDialog.DialogStyle.CRITICAL)
+                            dialog.showDialog()
+                            return
+                        case .success(let realm):
+                            print("Successfully opened realm: \(realm)")
+                            self.view.window?.close()
+                       
+                        }
+                        
+                    }
                     
                 }
-            }
-            
-        }
-        let user = realmApp?.currentUser
-        realmSyncConfiguration = user!.configuration(partitionValue: RealmAppSettings.PARTITION_KEY)
-        
-        Realm.asyncOpen(configuration: realmSyncConfiguration!) { result in
-            switch result {
-            case .failure(let error):
-                let dialog = ModalOptionDialog(message: error.localizedDescription,
-                                               buttonStyle: ModalOptionDialog.ButtonStyle.OK_OPTION,
-                                               dialogStyle: ModalOptionDialog.DialogStyle.CRITICAL)
-                dialog.showDialog()
-                return
-            case .success(let realm):
-                print("Successfully opened realm: \(realm)")
-           
             }
             
         }

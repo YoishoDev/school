@@ -40,7 +40,8 @@ class MainViewController: NSViewController {
     private var firstStepLabelList = [NSTextField]()
     private var firstStepButtonList = [NSButton]()
     
-    //  RealmApp fuer Sync
+    //  Realm
+    private var realm: Realm?
     private let realmApp = App(id: RealmAppSettings.REALM_APP_ID)
     internal var realmSyncConfiguration: Realm.Configuration?
     
@@ -281,26 +282,26 @@ class MainViewController: NSViewController {
         firstStepButtonList = [addCourseButton, addTeacherButton, addSchoolClassButton, addStudentButton]
 
         //  Version 2 - mit Sync
-        //  Realm-Sync aktiviert?
-        if RealmAppSettings.USE_REALM_SYNC || userSettings.bool(forKey: UserSettingsKeys.USE_REALM_SYNC) {
+        do {
             
-            //  Label und Checkbox aktivieren
-            cloudSyncLabel.isHidden = false
-            cloudSyncButton.isHidden = false
-            cloudSyncButton.state = NSControl.StateValue.on
-            
-            //  Login - Main2RealmSyncSeque ausfuehren
-            let sequeID = NSStoryboardSegue.Identifier("Main2RealmSyncSeque")
-            performSegue(withIdentifier: sequeID, sender: self)
-            //  ToDo: Erfolg auswerten, evtl. Sync deaktivieren und nur lokal speichern
-            
-            
-        } else {
-        
-            //  ansonsten lokalen Realm verwenden
-            //  waehrend der Entwicklung bei Schema-Aenderungen alle bisherigen Daten loeschen
-            do {
+            //  Realm-Sync aktiviert?
+            if RealmAppSettings.USE_REALM_SYNC || userSettings.bool(forKey: UserSettingsKeys.USE_REALM_SYNC) {
                 
+                //  Label und Checkbox aktivieren
+                cloudSyncLabel.isHidden = false
+                cloudSyncButton.isHidden = false
+                cloudSyncButton.state = NSControl.StateValue.on
+                
+                //  Login - Main2RealmSyncSeque ausfuehren
+                let sequeID = NSStoryboardSegue.Identifier("Main2RealmSyncSeque")
+                performSegue(withIdentifier: sequeID, sender: self)
+                //  ToDo: Erfolg auswerten, evtl. Sync deaktivieren und nur lokal speichern
+                //realm = try Realm(configuration: realmSyncConfiguration!)
+            
+            } else {
+        
+                //  ansonsten lokalen Realm verwenden
+                //  waehrend der Entwicklung bei Schema-Aenderungen alle bisherigen Daten loeschen
                 let configuration = Realm.Configuration(deleteRealmIfMigrationNeeded: true)
                 let realm = try Realm(configuration: configuration)
                 
@@ -320,29 +321,21 @@ class MainViewController: NSViewController {
                     dialog.showDialog()
                     
                 }
-                
-                //  Daten initialsieren
-                schoolList = realm.objects(School.self)
-                courseList = realm.objects(Course.self)
 
-                /* Bug? Funktioniert nicht aus modalen Views
-                https://github.com/realm/realm-cocoa/issues/7054
-                //  Realm-Benachrichtigungen, hier Schule
-                realmSchoolCollectionNotificationToken = schoolList.observe { [weak self] (changes: RealmCollectionChange) in*/
-                
-                //  Realm-Benachrichtigungen, hier alle Aenderungen
-                realmAllNotificationsToken = realm.observe { notification, realm in
+            }
+            
+            //  Daten laden
+            schoolList = realm?.objects(School.self)
+            courseList = realm?.objects(Course.self)
 
-                }
+            /* Bug? Funktioniert nicht aus modalen Views
+            https://github.com/realm/realm-cocoa/issues/7054
+            //  Realm-Benachrichtigungen, hier Schule
+            realmSchoolCollectionNotificationToken = schoolList.observe { [weak self] (changes: RealmCollectionChange) in*/
+            
+            //  Realm-Benachrichtigungen, hier alle Aenderungen
+            realmAllNotificationsToken = realm?.observe { notification, realm in
 
-            } catch {
-                
-                //  Fehler beim Zugriff auf die "Datenbank"
-                let dialog = ModalOptionDialog(message: error.localizedDescription,
-                                               buttonStyle: ModalOptionDialog.ButtonStyle.OK_OPTION,
-                                               dialogStyle: ModalOptionDialog.DialogStyle.CRITICAL)
-                dialog.showDialog()
-                
             }
             
             //  View initialisieren
@@ -351,6 +344,15 @@ class MainViewController: NSViewController {
             
             //  auf Aenderungen in der Auswahlbox (selbst) reagieren (extension:)
             schoolNameComboBox.delegate = self
+            
+        } catch {
+            
+            //  Fehler beim Zugriff auf die "Datenbank"
+            let dialog = ModalOptionDialog(message: error.localizedDescription,
+                                           buttonStyle: ModalOptionDialog.ButtonStyle.OK_OPTION,
+                                           dialogStyle: ModalOptionDialog.DialogStyle.CRITICAL)
+            dialog.showDialog()
+            
         }
  
     }
