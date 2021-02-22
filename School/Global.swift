@@ -12,17 +12,24 @@ import Foundation
 import Cocoa
 
 //  vorhandene Daten loeschen, Debug
-let REMOVE_REALM_DATA = false
+let REMOVE_REALM_DATA: Bool = false
 
-//  Set this to true if you have set up a MongoDB Realm app
-//  with Realm Sync and anonymous authentication.
-let USE_REALM_SYNC = false
+//  Synchronisation mit Cloud
+internal struct RealmAppSettings {
+
+    static let USE_REALM_SYNC: Bool     = true
+    static let REALM_APP_ID: String     = "realmtestapp-guiuw"
+    static let PARTITION_KEY: String    = "Test"
+    
+}
+
 
 //  Benutzereinstellungen
 internal struct UserSettingsKeys {
     
-    static let LAST_USED_SCHOOL_NAME: String = "LastUsedSchoolName"
-    static let FIRST_RUN_STEP: String = "FirstRunStep"
+    static let LAST_USED_SCHOOL_NAME: String    = "LastUsedSchoolName"
+    static let FIRST_RUN_STEP: String           = "FirstRunStep"
+    static let USE_REALM_SYNC: String           = "UseRealmSync"
     
 }
 

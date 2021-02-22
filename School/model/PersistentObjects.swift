@@ -15,12 +15,13 @@ import RealmSwift
 //  persistent gemacht werden können
 //  Definitionen der Attribute (Eigenschaften) zur Verwendung mit Realm
 //  id verwenden wir in allen Klassen als "Primaerschluessel",
-//  bei Nutzung von Sync ist Feld id notwendig,
+//  bei Nutzung von Sync ist das Feld _id (string, int objectID) notwendig,
 //  wird dynamisch erzeugt
 
 internal class School: Object {
     
-    @objc dynamic var id = ObjectId.generate()
+    @objc dynamic var _partition = "Test"
+    @objc dynamic var _id = ObjectId.generate()
     @objc dynamic var name = ""
     //  an 1 Schule lernen 1 oder mehrere Schueler (1:n)
     //  diese lernen in Klasse, welche der Schule zugeordnet sind
@@ -32,14 +33,15 @@ internal class School: Object {
     let teacher = LinkingObjects(fromType: Teacher.self, property: "schools")
     
     override static func primaryKey() -> String? {
-        return "id"
+        return "_id"
     }
     
 }
 
 internal class Teacher: Object {
     
-    @objc dynamic var id = ObjectId.generate()
+    @objc dynamic var _partition = "Test"
+    @objc dynamic var _id = ObjectId.generate()
     @objc dynamic var firstName = ""
     @objc dynamic var lastName = ""
     //  1 Lehrer kann an mehreren Schulen unterrichten
@@ -48,28 +50,30 @@ internal class Teacher: Object {
     let courses = List<Course>()
 
     override static func primaryKey() -> String? {
-        return "id"
+        return "_id"
     }
     
 }
 
 internal class Student: Object {
     
-    @objc dynamic var id = ObjectId.generate()
+    @objc dynamic var _partition = "Test"
+    @objc dynamic var _id = ObjectId.generate()
     @objc dynamic var firstName = ""
     @objc dynamic var lastName = ""
     //  die Schulklasse ist einer Schule zugeordnet
     @objc dynamic var schoolClass: SchoolClass?
     
     override static func primaryKey() -> String? {
-        return "id"
+        return "_id"
     }
     
 }
 
 internal class SchoolClass: Object {
     
-    @objc dynamic var id = ObjectId.generate()
+    @objc dynamic var _partition = "Test"
+    @objc dynamic var _id = ObjectId.generate()
     @objc dynamic var name = ""
     //  1 Klasse sollte genau 1 Lehrer haben (1:1)
     @objc dynamic var classTeacher: Teacher? = nil
@@ -77,21 +81,22 @@ internal class SchoolClass: Object {
     let student = List<Student>()
     
     override static func primaryKey() -> String? {
-        return "id"
+        return "_id"
     }
     
 }
 
 internal class Course: Object {
     
-    @objc dynamic var id = ObjectId.generate()
+    @objc dynamic var _partition = "Test"
+    @objc dynamic var _id = ObjectId.generate()
     @objc dynamic var name = ""
     //  1 Fach kann von 1 oder mehreren Lehrern unterrichtet werden
     //  verweist auf Objekte vom Typ Lehrer, Eigenschaft im konkreten Objekt
     let lehrer = LinkingObjects(fromType: Teacher.self, property: "courses")
     
     override static func primaryKey() -> String? {
-        return "id"
+        return "_id"
     }
     
 }
