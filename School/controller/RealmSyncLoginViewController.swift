@@ -2,7 +2,10 @@
 //  RealmSyncController.swift
 //  School
 //
-//  Created by lv13sch2 on 22.02.21.
+//  Created by mis on 22.02.21.
+//
+//  Copyright (c) [2021] [Michael Schmidt, michael.schmidt@app-making.de]
+//  You can use it under the MIT License (You find it in file LICENSE)
 //
 
 import Cocoa
