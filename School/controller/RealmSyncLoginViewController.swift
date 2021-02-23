@@ -116,7 +116,7 @@ class RealmSyncLoginViewController: NSViewController {
                 
             case .success(let user):
                 print("Successfully logged in as user \(user)")
-
+                self.view.window?.close()
             }
             
         }

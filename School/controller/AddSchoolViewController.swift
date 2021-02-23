@@ -42,10 +42,17 @@ class AddSchoolViewController: NSViewController {
         } else {
             
             // Schule speichern
-            if ((userRealm?.isEmpty) != nil){
+            do {
                 
-                do {
-                
+                    // Ensure the realm was opened with sync.
+                    guard let syncConfiguration = userRealm?.configuration.syncConfiguration else {
+                        fatalError("Sync configuration not found! Realm not opened with sync?");
+                    }
+
+                    // Partition value must be of string type.
+                    print(syncConfiguration.partitionValue!.stringValue!)
+
+                    
                     //  Schulen laden
                     let schoolList = userRealm?.objects(School.self)
                     //  noch keine Schule gespeichert
@@ -94,7 +101,6 @@ class AddSchoolViewController: NSViewController {
                                                dialogStyle: ModalOptionDialog.DialogStyle.CRITICAL)
                 dialog.showDialog()
                 
-            }
             }
             
         }

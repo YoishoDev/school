@@ -439,35 +439,27 @@ extension MainViewController: RealmDelegate {
     //  wenn in der RealmSyncLoginView ein Cloud-Realm initialisiert wurde
     func cloudRealmWasInit(_ userRealm: Realm) {
         
-        if !(userRealm.isEmpty) {
-            
-                //  Daten aus Cloud-Realm laden
-                schoolList = userRealm.objects(School.self)
-                courseList = userRealm.objects(Course.self)
+        //  Wert der Klassenvariablen zuweisen
+        self.userRealm = userRealm
+    
+        //  Daten aus Cloud-Realm laden
+        schoolList = userRealm.objects(School.self)
+        courseList = userRealm.objects(Course.self)
 
-                /* Bug? Funktioniert nicht aus modalen Views
-                https://github.com/realm/realm-cocoa/issues/7054
-                //  Realm-Benachrichtigungen, hier Schule
-                realmSchoolCollectionNotificationToken = schoolList.observe { [weak self] (changes: RealmCollectionChange) in*/
-                
-                //  Realm-Benachrichtigungen, hier alle Aenderungen
-                realmAllNotificationsToken = userRealm.observe { notification, realm in
-                    self.updateView()
-                }
-                
-                //  View initialisieren mit Cloud-Realm
-                initializeView()
-                updateView()
-                
-        } else {
-            
-            let dialog = ModalOptionDialog(message: "Die Daten konnten nicht geladen werden!",
-                                           buttonStyle: ModalOptionDialog.ButtonStyle.OK_OPTION,
-                                           dialogStyle: ModalOptionDialog.DialogStyle.WARNING)
-            dialog.showDialog()
-            
+        /* Bug? Funktioniert nicht aus modalen Views
+        https://github.com/realm/realm-cocoa/issues/7054
+        //  Realm-Benachrichtigungen, hier Schule
+        realmSchoolCollectionNotificationToken = schoolList.observe { [weak self] (changes: RealmCollectionChange) in*/
+        
+        //  Realm-Benachrichtigungen, hier alle Aenderungen
+        realmAllNotificationsToken = userRealm.observe { notification, realm in
+            self.updateView()
         }
         
+        //  View initialisieren mit Cloud-Realm
+        initializeView()
+        updateView()
+                
     }
     
     //  wenn in der AddSchoolView eine neue Schule angelegt wurde
