@@ -10,6 +10,7 @@
 
 import Foundation
 import Cocoa
+import RealmSwift
 
 //  vorhandene Daten loeschen, Debug
 let REMOVE_REALM_DATA: Bool = false
@@ -23,13 +24,22 @@ internal struct RealmAppSettings {
     
 }
 
-
 //  Benutzereinstellungen
 internal struct UserSettingsKeys {
     
     static let LAST_USED_SCHOOL_NAME: String    = "LastUsedSchoolName"
     static let FIRST_RUN_STEP: String           = "FirstRunStep"
     static let USE_REALM_SYNC: String           = "UseRealmSync"
+    static let SAVE_LOGIN: String               = "SaveLogin"
+    static let LAST_USED_EMAIL: String          = "LastUsedEMail"
+    
+}
+
+//  Delegate fuer Cloud-Realm
+protocol RealmDelegate: class {
+    
+    func cloudRealmWasInit(_ userRealm: Realm)
+    func schoolWasAdded(_ school: School)
     
 }
 

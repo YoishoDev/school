@@ -40,10 +40,9 @@ class MainViewController: NSViewController {
     private var firstStepLabelList = [NSTextField]()
     private var firstStepButtonList = [NSButton]()
     
-    //  Realm
-    private var realm: Realm?
-    private let realmApp = App(id: RealmAppSettings.REALM_APP_ID)
-    internal var realmSyncConfiguration: Realm.Configuration?
+    //  Realm - wird entweder im Main-Controller oder
+    //  bei Cloud-Nutzung im RealmSyncViewController initialisiert
+    private var userRealm: Realm?
     
     //  aktuelle Schule, fuer Uebergabe an andere Controller
     internal var actualSchool: School?
@@ -56,7 +55,6 @@ class MainViewController: NSViewController {
     
     //  Benachrichtigungen bei Aenderungen in der "Datenbank"
     private var realmAllNotificationsToken: NotificationToken?
-    private var realmSchoolCollectionNotificationToken: NotificationToken?
     
     //  Initialisierung der View beim Start der App
     private func initializeView() {
@@ -226,6 +224,7 @@ class MainViewController: NSViewController {
 
     }
 
+    //  Label je nach Stufe der "Ersten Schritte" anpassen
     private func updateFirstStepLabel(firstStepValue: Int) {
         
         //  erste Schritte - Label je nach Stufe ausblenden
@@ -281,36 +280,37 @@ class MainViewController: NSViewController {
         firstStepLabelList = [firstStepLabel, secondStepLabel, thirdStepLabel, fourthStepLabel, fivedStepLabel]
         firstStepButtonList = [addCourseButton, addTeacherButton, addSchoolClassButton, addStudentButton]
 
-        //  Version 2 - mit Sync
-        do {
-            
-            //  Realm-Sync aktiviert?
-            if RealmAppSettings.USE_REALM_SYNC || userSettings.bool(forKey: UserSettingsKeys.USE_REALM_SYNC) {
-                
-                //  Label und Checkbox aktivieren
-                cloudSyncLabel.isHidden = false
-                cloudSyncButton.isHidden = false
-                cloudSyncButton.state = NSControl.StateValue.on
-                
-                //  Login - Main2RealmSyncSeque ausfuehren
-                let sequeID = NSStoryboardSegue.Identifier("Main2RealmSyncSeque")
-                performSegue(withIdentifier: sequeID, sender: self)
-                //  ToDo: Erfolg auswerten, evtl. Sync deaktivieren und nur lokal speichern
-                //realm = try Realm(configuration: realmSyncConfiguration!)
-            
-            } else {
+        //  auf Aenderungen in der Auswahlbox (selbst) reagieren (extension:)
+        schoolNameComboBox.delegate = self
         
+        //  Verwendung von Cloud-Sync
+        if RealmAppSettings.USE_REALM_SYNC || userSettings.bool(forKey: UserSettingsKeys.USE_REALM_SYNC) {
+            
+            //  Label und Checkbox aktivieren
+            cloudSyncLabel.isHidden = false
+            cloudSyncButton.isHidden = false
+            cloudSyncButton.state = NSControl.StateValue.on
+            
+            //  RealmSyncLoginView anzeigen
+            let sequeID = NSStoryboardSegue.Identifier("Main2RealmSyncSeque")
+            performSegue(withIdentifier: sequeID, sender: self)
+            
+        } else {
+            
+            //  lokalen Realm verwenden
+            do {
+                
                 //  ansonsten lokalen Realm verwenden
                 //  waehrend der Entwicklung bei Schema-Aenderungen alle bisherigen Daten loeschen
                 let configuration = Realm.Configuration(deleteRealmIfMigrationNeeded: true)
-                let realm = try Realm(configuration: configuration)
+                userRealm = try Realm(configuration: configuration)
                 
                 //  Daten loeschen - fuer Test und Entwicklung
                 if REMOVE_REALM_DATA {
                     
-                    realm.beginWrite()
-                    realm.deleteAll()
-                    try realm.commitWrite()
+                    userRealm?.beginWrite()
+                    userRealm?.deleteAll()
+                    try userRealm?.commitWrite()
                     //  Erste Schritte aktivieren - Stufe 1 (Schule anlegen)
                     isFirstStepCompleted = false
                     userSettings.set(1, forKey: UserSettingsKeys.FIRST_RUN_STEP)
@@ -321,37 +321,34 @@ class MainViewController: NSViewController {
                     dialog.showDialog()
                     
                 }
+                
+                //  Daten laden
+                schoolList = userRealm?.objects(School.self)
+                courseList = userRealm?.objects(Course.self)
 
+                /* Bug? Funktioniert nicht aus modalen Views
+                https://github.com/realm/realm-cocoa/issues/7054
+                //  Realm-Benachrichtigungen, hier Schule
+                realmSchoolCollectionNotificationToken = schoolList.observe { [weak self] (changes: RealmCollectionChange) in*/
+                
+                //  Realm-Benachrichtigungen, hier alle Aenderungen
+                realmAllNotificationsToken = userRealm?.observe { notification, realm in
+                    self.updateView()
+                }
+                
+                //  View mit lokalem Realm inititalisieren
+                initializeView()
+                updateView()
+                
+            } catch {
+                
+                //  Fehler beim Zugriff auf die "Datenbank"
+                let dialog = ModalOptionDialog(message: error.localizedDescription,
+                                               buttonStyle: ModalOptionDialog.ButtonStyle.OK_OPTION,
+                                               dialogStyle: ModalOptionDialog.DialogStyle.CRITICAL)
+                dialog.showDialog()
+                
             }
-            
-            //  Daten laden
-            schoolList = realm?.objects(School.self)
-            courseList = realm?.objects(Course.self)
-
-            /* Bug? Funktioniert nicht aus modalen Views
-            https://github.com/realm/realm-cocoa/issues/7054
-            //  Realm-Benachrichtigungen, hier Schule
-            realmSchoolCollectionNotificationToken = schoolList.observe { [weak self] (changes: RealmCollectionChange) in*/
-            
-            //  Realm-Benachrichtigungen, hier alle Aenderungen
-            realmAllNotificationsToken = realm?.observe { notification, realm in
-
-            }
-            
-            //  View initialisieren
-            initializeView()
-            updateView()
-            
-            //  auf Aenderungen in der Auswahlbox (selbst) reagieren (extension:)
-            schoolNameComboBox.delegate = self
-            
-        } catch {
-            
-            //  Fehler beim Zugriff auf die "Datenbank"
-            let dialog = ModalOptionDialog(message: error.localizedDescription,
-                                           buttonStyle: ModalOptionDialog.ButtonStyle.OK_OPTION,
-                                           dialogStyle: ModalOptionDialog.DialogStyle.CRITICAL)
-            dialog.showDialog()
             
         }
  
@@ -364,7 +361,7 @@ class MainViewController: NSViewController {
         if let destinationViewController = segue.destinationController as? AddSchoolViewController {
             
             //  Uebergabe des MainViewControllers an die naechste View (den Controller)
-            destinationViewController.mainViewController = self
+            destinationViewController.userRealm = userRealm
             return
             
         }
@@ -396,15 +393,6 @@ class MainViewController: NSViewController {
 
         }
         
-        //  Ist das Ziel die RealmSyncView?
-        if let destinationViewController = segue.destinationController as? RealmSyncLoginViewController {
-            
-            //  Uebergabe der RealmApp an die naechste View (den Controller)
-            destinationViewController.realmApp = realmApp
-            return
-
-        }
-        
     }
     
     @IBAction func cloudSyncButtonClicked(_ sender: NSButton) {
@@ -422,7 +410,6 @@ class MainViewController: NSViewController {
     override func viewDidDisappear() {
         
         realmAllNotificationsToken?.invalidate()
-        realmSchoolCollectionNotificationToken?.invalidate()
         
     }
 
@@ -447,4 +434,47 @@ extension MainViewController: NSComboBoxDelegate {
     }
     
 }
+extension MainViewController: RealmDelegate {
+    
+    //  wenn in der RealmSyncLoginView ein Cloud-Realm initialisiert wurde
+    func cloudRealmWasInit(_ userRealm: Realm) {
+        
+        if !(userRealm.isEmpty) {
+            
+                //  Daten aus Cloud-Realm laden
+                schoolList = userRealm.objects(School.self)
+                courseList = userRealm.objects(Course.self)
 
+                /* Bug? Funktioniert nicht aus modalen Views
+                https://github.com/realm/realm-cocoa/issues/7054
+                //  Realm-Benachrichtigungen, hier Schule
+                realmSchoolCollectionNotificationToken = schoolList.observe { [weak self] (changes: RealmCollectionChange) in*/
+                
+                //  Realm-Benachrichtigungen, hier alle Aenderungen
+                realmAllNotificationsToken = userRealm.observe { notification, realm in
+                    self.updateView()
+                }
+                
+                //  View initialisieren mit Cloud-Realm
+                initializeView()
+                updateView()
+                
+        } else {
+            
+            let dialog = ModalOptionDialog(message: "Die Daten konnten nicht geladen werden!",
+                                           buttonStyle: ModalOptionDialog.ButtonStyle.OK_OPTION,
+                                           dialogStyle: ModalOptionDialog.DialogStyle.WARNING)
+            dialog.showDialog()
+            
+        }
+        
+    }
+    
+    //  wenn in der AddSchoolView eine neue Schule angelegt wurde
+    func schoolWasAdded(_ school: School) {
+        
+        actualSchool = school
+    
+    }
+    
+}

@@ -16,14 +16,17 @@ class AddSchoolViewController: NSViewController {
     //  View-Elemente
     @IBOutlet weak var schoolNameTextField: NSTextField!
     
-    //  MainViewController
-    internal weak var mainViewController:MainViewController?
+    //  Delegate - fuer Uebergabe des Realm
+    private weak var delegate: RealmDelegate?
     
+    //  Realm
+    internal var userRealm: Realm?
+    
+    //  Initialsiierung der View
     override func viewDidLoad() {
         
         super.viewDidLoad()
         
-        // Do view setup here.
     }
     
     @IBAction func saveButtonClicked(_ sender: NSButton) {
@@ -39,59 +42,59 @@ class AddSchoolViewController: NSViewController {
         } else {
             
             // Schule speichern
-            do {
+            if ((userRealm?.isEmpty) != nil){
                 
-                // Realm initialisieren
-                let realm = try Realm()
-                //  Schulen laden
-                let schoolList = realm.objects(School.self)
-                //  noch keine Schule gespeichert
-                if !schoolList.isEmpty {
-                    
-                    //  pruefen, ob schon vorhanden
-                    //  ueber Namen
-                    //
-                    for school in schoolList {
+                do {
+                
+                    //  Schulen laden
+                    let schoolList = userRealm?.objects(School.self)
+                    //  noch keine Schule gespeichert
+                    if !(schoolList?.isEmpty ?? true) {
                         
-                        if school.name.lowercased() == schoolNameTextField.stringValue.lowercased() {
+                        //  pruefen, ob schon vorhanden
+                        //  ueber Namen
+                        for school in schoolList! {
                             
-                            let dialog = ModalOptionDialog(message: "Eine Schule mit diesem Namen existiert bereits!",
-                                                           buttonStyle: ModalOptionDialog.ButtonStyle.OK_OPTION,
-                                                           dialogStyle: ModalOptionDialog.DialogStyle.WARNING)
-                            dialog.showDialog()
-                            return
+                            if school.name.lowercased() == schoolNameTextField.stringValue.lowercased() {
+                                
+                                let dialog = ModalOptionDialog(message: "Eine Schule mit diesem Namen existiert bereits!",
+                                                               buttonStyle: ModalOptionDialog.ButtonStyle.OK_OPTION,
+                                                               dialogStyle: ModalOptionDialog.DialogStyle.WARNING)
+                                dialog.showDialog()
+                                return
+                            }
+                            
                         }
                         
                     }
+                    //  neues Objekt vom Typ Schule erstellen
+                    let school: School = School()
+                    school.name = schoolNameTextField.stringValue
+                    //  Problem: Notify ueber Realm bevor Schule neu zugewiesen
+                    //  Aktualisierung der Benutzereinstellungen
+                    //  wir wissen hier noch nicht, ob das Hinzufuegen erfolgreich sein wird
+                    let userSettings = UserDefaults.standard
+                    userSettings.set(school.name, forKey: UserSettingsKeys.LAST_USED_SCHOOL_NAME)
+                    //  Transaktion beginnen
+                    userRealm?.beginWrite()
+                    //  Objekt speichern
+                    userRealm?.add(school)
+                    //  Transaktion abschliessen
+                    try userRealm?.commitWrite()
+                    //  MainView "benachrichtigen"
+                    //  neue Schule als aktuelle Schule setzen
+                    delegate?.schoolWasAdded(school)
+                    //  Fenster schliessen
+                    self.view.window?.close()
                     
-                }
-                //  neues Objekt vom Typ Schule erstellen
-                let school: School = School()
-                school.name = schoolNameTextField.stringValue
-                //  Problem: Notify ueber Realm bevor Schule neu zugewiesen
-                //  Aktualisierung der Benutzereinstellungen
-                //  wir wissen hier noch nicht, ob das Hinzufuegen erfolgreich sein wird
-                let userSettings = UserDefaults.standard
-                userSettings.set(school.name, forKey: UserSettingsKeys.LAST_USED_SCHOOL_NAME)
-                //  Transaktion beginnen
-                realm.beginWrite()
-                //  Objekt speichern
-                realm.add(school)
-                //  Transaktion abschliessen
-                try realm.commitWrite()
-                //  soeben erstellte Schule als aktuelle Schule setzen
-                //  Problem: Notify ueber Realm bevor Schule neu zugewiesen
-                mainViewController?.actualSchool = school
-                //  Fenster schliessen
-                self.view.window?.close()
-                
-            } catch {
+                } catch {
                 
                 let dialog = ModalOptionDialog(message: error.localizedDescription,
                                                buttonStyle: ModalOptionDialog.ButtonStyle.OK_OPTION,
                                                dialogStyle: ModalOptionDialog.DialogStyle.CRITICAL)
                 dialog.showDialog()
                 
+            }
             }
             
         }

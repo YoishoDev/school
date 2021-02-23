@@ -20,7 +20,7 @@ import RealmSwift
 
 internal class School: Object {
     
-    @objc dynamic var _partition = "Test"
+    @objc dynamic var _partition = ""
     @objc dynamic var _id = ObjectId.generate()
     @objc dynamic var name = ""
     //  an 1 Schule lernen 1 oder mehrere Schueler (1:n)
@@ -40,7 +40,7 @@ internal class School: Object {
 
 internal class Teacher: Object {
     
-    @objc dynamic var _partition = "Test"
+    @objc dynamic var _partition = ""
     @objc dynamic var _id = ObjectId.generate()
     @objc dynamic var firstName = ""
     @objc dynamic var lastName = ""
@@ -57,7 +57,7 @@ internal class Teacher: Object {
 
 internal class Student: Object {
     
-    @objc dynamic var _partition = "Test"
+    @objc dynamic var _partition = ""
     @objc dynamic var _id = ObjectId.generate()
     @objc dynamic var firstName = ""
     @objc dynamic var lastName = ""
@@ -72,7 +72,7 @@ internal class Student: Object {
 
 internal class SchoolClass: Object {
     
-    @objc dynamic var _partition = "Test"
+    @objc dynamic var _partition = ""
     @objc dynamic var _id = ObjectId.generate()
     @objc dynamic var name = ""
     //  1 Klasse sollte genau 1 Lehrer haben (1:1)
@@ -88,7 +88,7 @@ internal class SchoolClass: Object {
 
 internal class Course: Object {
     
-    @objc dynamic var _partition = "Test"
+    @objc dynamic var _partition = ""
     @objc dynamic var _id = ObjectId.generate()
     @objc dynamic var name = ""
     //  1 Fach kann von 1 oder mehreren Lehrern unterrichtet werden
