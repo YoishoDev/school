@@ -61,7 +61,13 @@ class MainViewController: NSViewController {
         
         //  Stufe der ersten Schritte ermitteln
         // und View entsprechend anpassen
-        switch userSettings.integer(forKey: UserSettingsKeys.FIRST_RUN_STEP) {
+        var firstStepValue: Int = 1
+        if UserSettings.keyExists(UserSettings.FIRST_RUN_STEP) {
+            
+            firstStepValue = userSettings.integer(forKey: UserSettings.FIRST_RUN_STEP)
+            
+        }
+        switch firstStepValue {
         case 1:
             isFirstStepCompleted = false
             updateFirstStepLabel(firstStepValue: 1)
@@ -83,7 +89,7 @@ class MainViewController: NSViewController {
         default:
             isFirstStepCompleted = false
             updateFirstStepLabel(firstStepValue: 1)
-            userSettings.setValue(1, forKey: UserSettingsKeys.FIRST_RUN_STEP)
+            userSettings.setValue(1, forKey: UserSettings.FIRST_RUN_STEP)
             
         }
         
@@ -91,8 +97,18 @@ class MainViewController: NSViewController {
         if !(schoolList?.isEmpty ?? true) {
             
             var index: Int = 0
-            let lastActualSchoolName = userSettings.string(forKey: UserSettingsKeys.LAST_USED_SCHOOL_NAME) ?? ""
             var isSelected: Bool = false
+            var lastActualSchoolName: String
+            if UserSettings.keyExists(UserSettings.LAST_USED_SCHOOL_NAME) {
+                
+                lastActualSchoolName = userSettings.string(forKey: UserSettings.LAST_USED_SCHOOL_NAME) ?? ""
+                
+            } else {
+                
+                lastActualSchoolName = ""
+                
+            }
+            
             for school in schoolList! {
                 
                 schoolNameComboBox.addItem(withObjectValue: school.name)
@@ -117,15 +133,24 @@ class MainViewController: NSViewController {
         
         var index: Int = 0
         var isSelected: Bool = false
-        let actualSchoolName = userSettings.string(forKey: UserSettingsKeys.LAST_USED_SCHOOL_NAME) ?? ""
+        var lastActualSchoolName: String
+        if UserSettings.keyExists(UserSettings.LAST_USED_SCHOOL_NAME) {
+            
+            lastActualSchoolName = userSettings.string(forKey: UserSettings.LAST_USED_SCHOOL_NAME) ?? ""
+            
+        } else {
+            
+            lastActualSchoolName = ""
+            
+        }
+        
         //  wurde eine Schule neu angelegt?
         if schoolNameComboBox.numberOfItems < schoolList?.count ?? 0 {
             
             for school in schoolList! {
                 
-                if actualSchoolName.uppercased() == school.name.uppercased() {
+                if lastActualSchoolName.uppercased() == school.name.uppercased() {
                     
-                    actualSchool = school
                     schoolNameComboBox.addItem(withObjectValue: school.name)
                     schoolNameComboBox.selectItem(at: index)
                     isSelected = true
@@ -140,7 +165,7 @@ class MainViewController: NSViewController {
                 schoolNameComboBox.selectItem(at: index)
                 
             }
-            userSettings.set(2, forKey: UserSettingsKeys.FIRST_RUN_STEP)
+            userSettings.set(2, forKey: UserSettings.FIRST_RUN_STEP)
             updateFirstStepLabel(firstStepValue: 2)
             
         } else {
@@ -148,9 +173,9 @@ class MainViewController: NSViewController {
             //  neue Schule in Auswahlbox gewaehlt?
             for school in schoolList! {
                 
-                if school.name.uppercased() == actualSchoolName.uppercased() {
+                if school.name.uppercased() == lastActualSchoolName.uppercased() {
                     
-                    actualSchool = school
+                    self.actualSchool = school
                     
                 }
                 
@@ -169,7 +194,7 @@ class MainViewController: NSViewController {
            
             if courseList?.count ?? 0 > 0 {
             
-                userSettings.set(3, forKey: UserSettingsKeys.FIRST_RUN_STEP)
+                userSettings.set(3, forKey: UserSettings.FIRST_RUN_STEP)
                 updateFirstStepLabel(firstStepValue: 3)
                 
             }
@@ -183,10 +208,14 @@ class MainViewController: NSViewController {
         if !isFirstStepCompleted {
             
             //  es wurde ein Lehrer angelegt -> erste Schritte Stufe 4
-            if teacherCount > 0 && userSettings.integer(forKey: UserSettingsKeys.FIRST_RUN_STEP) == 3 {
+            if UserSettings.keyExists(UserSettings.FIRST_RUN_STEP) {
                 
-                userSettings.set(4, forKey: UserSettingsKeys.FIRST_RUN_STEP)
+                if teacherCount > 0 && userSettings.integer(forKey: UserSettings.FIRST_RUN_STEP) == 3 {
+                
+                userSettings.set(4, forKey: UserSettings.FIRST_RUN_STEP)
                 updateFirstStepLabel(firstStepValue: 4)
+                
+                }
                 
             }
             
@@ -198,7 +227,7 @@ class MainViewController: NSViewController {
         //  es wurde eine Klasse angelegt -> erste Schritte Stufe 5
         if !isFirstStepCompleted && schoolClassCount > 0 {
             
-            userSettings.set(5, forKey: UserSettingsKeys.FIRST_RUN_STEP)
+            userSettings.set(5, forKey: UserSettings.FIRST_RUN_STEP)
             updateFirstStepLabel(firstStepValue: 5)
             
         }
@@ -217,7 +246,7 @@ class MainViewController: NSViewController {
         //  es wurde eine Klasse angelegt -> erste Schritte Stufe 99
         if !isFirstStepCompleted && studentsCount > 0 {
             
-            userSettings.set(99, forKey: UserSettingsKeys.FIRST_RUN_STEP)
+            userSettings.set(99, forKey: UserSettings.FIRST_RUN_STEP)
             updateFirstStepLabel(firstStepValue: 99)
             
         }
@@ -276,7 +305,7 @@ class MainViewController: NSViewController {
         
         super.viewDidLoad()
         
-        //  Label fuer die resten Schritte
+        //  Label fuer die "Ersten Schritte"
         firstStepLabelList = [firstStepLabel, secondStepLabel, thirdStepLabel, fourthStepLabel, fivedStepLabel]
         firstStepButtonList = [addCourseButton, addTeacherButton, addSchoolClassButton, addStudentButton]
 
@@ -284,23 +313,38 @@ class MainViewController: NSViewController {
         schoolNameComboBox.delegate = self
         
         //  Verwendung von Cloud-Sync
-        if RealmAppSettings.USE_REALM_SYNC || userSettings.bool(forKey: UserSettingsKeys.USE_REALM_SYNC) {
+        var useCloudSync: Bool = false
+        if RealmAppSettings.USE_REALM_SYNC {
+                
+                //  Anwendung unterstuetzt Cloud-Sync - Dev
+                //  Label und Checkbox aktivieren
+                cloudSyncLabel.isHidden = false
+                cloudSyncButton.isHidden = false
+                
+            //  Nutzer hat es auch aktiviert?
+            if UserSettings.keyExists(UserSettings.USE_REALM_SYNC) {
+                
+                if userSettings.bool(forKey: UserSettings.USE_REALM_SYNC) {
+                    
+                    cloudSyncButton.state = NSControl.StateValue.on
+                    useCloudSync = true
+                    
+                    //  Nutzer muss sich anmelden
+                    //  RealmSyncLoginView anzeigen und Cloud-Sync aktivieren
+                    //  userRealm wird als Cloud-Sync aktiviert
+                    let sequeID = NSStoryboardSegue.Identifier("Main2RealmSyncSeque")
+                    performSegue(withIdentifier: sequeID, sender: self)
+                    
+                }
+                
+            }
             
-            //  Label und Checkbox aktivieren
-            cloudSyncLabel.isHidden = false
-            cloudSyncButton.isHidden = false
-            cloudSyncButton.state = NSControl.StateValue.on
-            
-            //  RealmSyncLoginView anzeigen
-            let sequeID = NSStoryboardSegue.Identifier("Main2RealmSyncSeque")
-            performSegue(withIdentifier: sequeID, sender: self)
-            
-        } else {
-            
-            //  lokalen Realm verwenden
+        }
+        if !useCloudSync {
+                
+            //  userRealm wird lokal aktiviert
             do {
                 
-                //  ansonsten lokalen Realm verwenden
                 //  waehrend der Entwicklung bei Schema-Aenderungen alle bisherigen Daten loeschen
                 let configuration = Realm.Configuration(deleteRealmIfMigrationNeeded: true)
                 userRealm = try Realm(configuration: configuration)
@@ -313,7 +357,7 @@ class MainViewController: NSViewController {
                     try userRealm?.commitWrite()
                     //  Erste Schritte aktivieren - Stufe 1 (Schule anlegen)
                     isFirstStepCompleted = false
-                    userSettings.set(1, forKey: UserSettingsKeys.FIRST_RUN_STEP)
+                    userSettings.set(1, forKey: UserSettings.FIRST_RUN_STEP)
                     //  Hinweis an Nutzer
                     let dialog = ModalOptionDialog(message: "Alle Daten wurden gelöscht! Bitte Konfiguration anpassen!",
                                                    buttonStyle: ModalOptionDialog.ButtonStyle.OK_OPTION,
@@ -322,7 +366,7 @@ class MainViewController: NSViewController {
                     
                 }
                 
-                //  Daten laden
+                //  Daten (aus lokalem) Realm laden
                 schoolList = userRealm?.objects(School.self)
                 courseList = userRealm?.objects(Course.self)
 
@@ -331,7 +375,7 @@ class MainViewController: NSViewController {
                 //  Realm-Benachrichtigungen, hier Schule
                 realmSchoolCollectionNotificationToken = schoolList.observe { [weak self] (changes: RealmCollectionChange) in*/
                 
-                //  Realm-Benachrichtigungen, hier alle Aenderungen
+                //  Realm-Benachrichtigungen (fuer lokalen Realm), hier alle Aenderungen
                 realmAllNotificationsToken = userRealm?.observe { notification, realm in
                     self.updateView()
                 }
@@ -357,11 +401,30 @@ class MainViewController: NSViewController {
     //  wird vor Uebergabe an naechsten Controller aufgerufen
     override func prepare(for segue: NSStoryboardSegue, sender: Any?) {
         
+        //  Ist das Ziel die RealmSyncLoginView?
+        if let destinationViewController = segue.destinationController as? RealmSyncLoginViewController {
+            
+            //  Delegate "anmelden"
+            destinationViewController.delegate = self
+            return
+            
+        }
+        
         //  Ist das Ziel die AddSchoolView?
         if let destinationViewController = segue.destinationController as? AddSchoolViewController {
             
             //  Uebergabe des MainViewControllers an die naechste View (den Controller)
-            destinationViewController.userRealm = userRealm
+            destinationViewController.delegate = self
+            destinationViewController.userRealm = self.userRealm
+            return
+            
+        }
+        
+        //  Ist das Ziel die AddSchoolView?
+        if let destinationViewController = segue.destinationController as? AddCourseViewController {
+            
+            //  Uebergabe des MainViewControllers an die naechste View (den Controller)
+            destinationViewController.userRealm = self.userRealm
             return
             
         }
@@ -370,7 +433,8 @@ class MainViewController: NSViewController {
         if let destinationViewController = segue.destinationController as? AddClassViewController {
             
             //  Uebergabe der aktuellen Schule an die naechste View (den Controller)
-            destinationViewController.actualSchool = actualSchool
+            destinationViewController.actualSchool = self.actualSchool
+            destinationViewController.userRealm = self.userRealm
             return
             
         }
@@ -379,7 +443,8 @@ class MainViewController: NSViewController {
         if let destinationViewController = segue.destinationController as? AddTeacherViewController {
             
             //  Uebergabe der aktuellen Schule an die naechste View (den Controller)
-            destinationViewController.actualSchool = actualSchool
+            destinationViewController.actualSchool = self.actualSchool
+            destinationViewController.userRealm = self.userRealm
             return
 
         }
@@ -388,7 +453,8 @@ class MainViewController: NSViewController {
         if let destinationViewController = segue.destinationController as? AddStudentViewController {
             
             //  Uebergabe der aktuellen Schule an die naechste View (den Controller)
-            destinationViewController.actualSchool = actualSchool
+            destinationViewController.actualSchool = self.actualSchool
+            destinationViewController.userRealm = self.userRealm
             return
 
         }
@@ -424,7 +490,7 @@ extension MainViewController: NSComboBoxDelegate {
         if let schoolName = schoolNameComboBox.objectValueOfSelectedItem as? String {
         
             //  Namen der aktuellen Schule speicherm
-            userSettings.set(schoolName, forKey: UserSettingsKeys.LAST_USED_SCHOOL_NAME)
+            userSettings.set(schoolName, forKey: UserSettings.LAST_USED_SCHOOL_NAME)
             //  View aktualisieren
             updateSchoolComboBox()
             updateView()
@@ -441,7 +507,7 @@ extension MainViewController: RealmDelegate {
         
         //  Wert der Klassenvariablen zuweisen
         self.userRealm = userRealm
-    
+        
         //  Daten aus Cloud-Realm laden
         schoolList = userRealm.objects(School.self)
         courseList = userRealm.objects(Course.self)
@@ -465,7 +531,9 @@ extension MainViewController: RealmDelegate {
     //  wenn in der AddSchoolView eine neue Schule angelegt wurde
     func schoolWasAdded(_ school: School) {
         
-        actualSchool = school
+        self.actualSchool = school
+        updateSchoolComboBox()
+        updateView()
     
     }
     

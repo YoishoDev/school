@@ -3,5 +3,8 @@ neue Schule:    Aktivierung / Deaktivierung Erste Schritte:
 Anzahl der Klassen ermitteln und anzeigen
 Lokalisierung
 Log out bei Cloud?
-Speicherung der E-Mail (ungültige Zeichen beim Laden aus userSetting?, Login Failed)
+Speicherung der E-Mail (ungültige Zeichen beim Laden aus userSetting?, Login Failed) oder liegt es am Passwort-Feld
 Apple Schlüsselbund nervt
+beim Speichern wird der Fehler nicht abgefangen (catch ...)
+cloudRealm / localRealm?
+App-Icons

@@ -18,20 +18,8 @@ let REMOVE_REALM_DATA: Bool = false
 //  Synchronisation mit Cloud
 internal struct RealmAppSettings {
 
-    static let USE_REALM_SYNC: Bool     = true
+    static let USE_REALM_SYNC: Bool     = false
     static let REALM_APP_ID: String     = "realmtestapp-guiuw"
-    static let PARTITION_KEY: String    = "Test"
-    
-}
-
-//  Benutzereinstellungen
-internal struct UserSettingsKeys {
-    
-    static let LAST_USED_SCHOOL_NAME: String    = "LastUsedSchoolName"
-    static let FIRST_RUN_STEP: String           = "FirstRunStep"
-    static let USE_REALM_SYNC: String           = "UseRealmSync"
-    static let SAVE_LOGIN: String               = "SaveLogin"
-    static let LAST_USED_EMAIL: String          = "LastUsedEMail"
     
 }
 
@@ -40,6 +28,28 @@ protocol RealmDelegate: class {
     
     func cloudRealmWasInit(_ userRealm: Realm)
     func schoolWasAdded(_ school: School)
+    
+}
+
+//  UserDefaults
+public struct UserSettings {
+    
+    static let LAST_USED_SCHOOL_NAME: String    = "LastUsedSchoolName"
+    static let FIRST_RUN_STEP: String           = "FirstRunStep"
+    static let USE_REALM_SYNC: String           = "UseRealmSync"
+    static let SAVE_LOGIN: String               = "SaveLogin"
+    static let LAST_USED_EMAIL: String          = "LastUsedEMail"
+    
+    static func keyExists(_ key: String) -> Bool {
+        
+        guard let _ = UserDefaults.standard.object(forKey: key) else {
+            
+            return false
+            
+        }
+
+       return true
+    }
     
 }
 

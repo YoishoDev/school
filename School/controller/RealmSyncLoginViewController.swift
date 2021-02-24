@@ -1,5 +1,5 @@
 //
-//  RealmSyncController.swift
+//  RealmSyncLoginViewController.swift
 //  School
 //
 //  Created by mis on 22.02.21.
@@ -26,7 +26,7 @@ class RealmSyncLoginViewController: NSViewController {
     private let progressIndicator = NSProgressIndicator()
     
     //  Delegate - fuer Uebergabe des Realm
-    private weak var delegate: RealmDelegate?
+    internal weak var delegate: RealmDelegate?
     
     //  Realm-App - Zugriff auf die Cloud-DB
     private let realmApp = App(id: RealmAppSettings.REALM_APP_ID)
@@ -115,8 +115,37 @@ class RealmSyncLoginViewController: NSViewController {
                 dialog.showDialog()
                 
             case .success(let user):
-                print("Successfully logged in as user \(user)")
-                self.view.window?.close()
+                self.realmSyncInfoLabel.stringValue = "Login succeeded!"
+                // Load again while we open the realm.
+                self.setLoading(true);
+                // Partionierung nach Nutzer - jeder Nutzer sieht nur seine Daten
+                var configuration = user.configuration(partitionValue: "user=\(user.id)")
+                // Only allow User objects in this partition. - ??? Alles laden?
+                configuration.objectTypes = [School.self, SchoolClass.self, Course.self, Teacher.self, Student.self]
+                // Open the realm asynchronously so that it downloads the remote copy before
+                // opening the local copy.
+                Realm.asyncOpen(configuration: configuration) { [weak self](result) in
+                    DispatchQueue.main.async {
+                        
+                        self!.setLoading(false);
+                        switch result {
+                        case .failure(let error):
+                            let dialog = ModalOptionDialog(message: error.localizedDescription,
+                                                           buttonStyle: ModalOptionDialog.ButtonStyle.OK_OPTION,
+                                                           dialogStyle: ModalOptionDialog.DialogStyle.CRITICAL)
+                            dialog.showDialog()
+                            return
+                        case .success(let userRealm):
+                            //  Main benachrichtigen und Cloud-Realm uebergeben
+                            self?.delegate?.cloudRealmWasInit(userRealm)
+                            //  modal schliessen, weiter in MainView
+                            self?.view.window?.close()
+                        }
+                        
+                    }
+                    
+                }
+                
             }
             
         }
@@ -129,7 +158,7 @@ class RealmSyncLoginViewController: NSViewController {
         setLoading(true);
 
         realmApp.login(credentials: Credentials.emailPassword(email: emailAddressTextField.stringValue,
-                                                              password: passwordTextField.stringValue)) { [weak self](result) in
+                                                              password: "ificant12OPQ")) { [weak self](result) in
             
             // Completion handlers are not necessarily called on the UI thread.
             // This call to DispatchQueue.main.sync ensures that any changes to the UI,
@@ -149,9 +178,9 @@ class RealmSyncLoginViewController: NSViewController {
                     // Load again while we open the realm.
                     self!.setLoading(true);
                     // Partionierung nach Nutzer - jeder Nutzer sieht nur seine Daten
-                    let configuration = user.configuration(partitionValue: "user=\(user.id)")
+                    var configuration = user.configuration(partitionValue: "user=\(user.id)")
                     // Only allow User objects in this partition. - ??? Alles laden?
-                    // configuration.objectTypes = [User.self, School.self]
+                    configuration.objectTypes = [School.self, SchoolClass.self, Course.self, Teacher.self, Student.self]
                     // Open the realm asynchronously so that it downloads the remote copy before
                     // opening the local copy.
                     Realm.asyncOpen(configuration: configuration) { [weak self](result) in
@@ -184,19 +213,24 @@ class RealmSyncLoginViewController: NSViewController {
         super.viewDidLoad()
         
         //  Login gespeichert? Felder vorbelegen
-        if userSettings.bool(forKey: UserSettingsKeys.SAVE_LOGIN) {
-            
-            if let lastUsedEmail = userSettings.string(forKey: UserSettingsKeys.LAST_USED_EMAIL) {
+        if UserSettings.keyExists(UserSettings.SAVE_LOGIN) {
+            if userSettings.bool(forKey: UserSettings.SAVE_LOGIN) {
                 
-                saveLoginCheckBox.state = NSControl.StateValue.on
-                emailAddressTextField.stringValue = lastUsedEmail
+                if let lastUsedEmail = userSettings.string(forKey: UserSettings.LAST_USED_EMAIL) {
+                    
+                    saveLoginCheckBox.state = NSControl.StateValue.on
+                    //  Problem beim Login
+                    //emailAddressTextField.stringValue = lastUsedEmail
+                }
+                
             }
             
         }
         
         //  Aktivitaetenanzeige
-                progressIndicator.style = NSProgressIndicator.Style.spinning
-                progressIndicator.usesThreadedAnimation = true
+        progressIndicator.style = NSProgressIndicator.Style.spinning
+        progressIndicator.usesThreadedAnimation = true
+        self.view.addSubview(progressIndicator)
 
     }
     
@@ -243,8 +277,8 @@ class RealmSyncLoginViewController: NSViewController {
                 //  Login-Daten speichern?
                 if saveLoginCheckBox.state == NSControl.StateValue.on {
                     
-                    userSettings.setValue(true, forKey: UserSettingsKeys.SAVE_LOGIN)
-                    userSettings.setValue(emailAddressTextField.stringValue, forKey: UserSettingsKeys.LAST_USED_EMAIL)
+                    userSettings.setValue(true, forKey: UserSettings.SAVE_LOGIN)
+                    userSettings.setValue(emailAddressTextField.stringValue, forKey: UserSettings.LAST_USED_EMAIL)
                     
                 }
                 
