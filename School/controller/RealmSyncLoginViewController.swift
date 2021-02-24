@@ -158,7 +158,7 @@ class RealmSyncLoginViewController: NSViewController {
         setLoading(true);
 
         realmApp.login(credentials: Credentials.emailPassword(email: emailAddressTextField.stringValue,
-                                                              password: "ificant12OPQ")) { [weak self](result) in
+                                                              password: passwordTextField.stringValue)) { [weak self](result) in
             
             // Completion handlers are not necessarily called on the UI thread.
             // This call to DispatchQueue.main.sync ensures that any changes to the UI,
