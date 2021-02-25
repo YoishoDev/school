@@ -93,7 +93,7 @@ class MainViewController: NSViewController {
             userSettings.setValue(1, forKey: UserSettings.FIRST_RUN_STEP)
             
         }
-        
+    
         //  Auswahlbox initialisieren
         if !(schoolList?.isEmpty ?? true) {
             
@@ -134,7 +134,6 @@ class MainViewController: NSViewController {
             if index > 0 { schoolNameComboBox.numberOfVisibleItems = index }
             
         }
-        
         
     }
     
@@ -258,19 +257,13 @@ class MainViewController: NSViewController {
     private func initializeLocalRealm() -> Bool {
         
         //  kann auch waehrend der Nutzung der App aufgerufen werden
-        //  Daten aus Auswahlbox loeschen
-        if schoolNameComboBox.objectValues.count > 0 {
+        //  "Daten" aus Auswahlbox loeschen
+        schoolNameComboBox.removeAllItems()
+        schoolNameComboBox.stringValue = ""
+        schoolNameComboBox.numberOfVisibleItems = 1
             
-            schoolNameComboBox.removeAllItems()
-            
-        }
         //  und Benachrichtigungen deaktivieren
-        if realmAllNotificationsToken != nil {
-            
-            realmAllNotificationsToken?.invalidate()
-            
-        }
-        
+        realmAllNotificationsToken?.invalidate()
         do {
             
             //  waehrend der Entwicklung bei Schema-Aenderungen alle bisherigen Daten loeschen
@@ -335,6 +328,7 @@ class MainViewController: NSViewController {
         //  Elemente-Listen fuer die "Ersten Schritte"
         firstStepLabelList = [firstStepLabel, secondStepLabel, thirdStepLabel, fourthStepLabel, fivedStepLabel]
         firstStepButtonList = [addCourseButton, addTeacherButton, addSchoolClassButton, addStudentButton]
+        
 
         //  auf Aenderungen in der Auswahlbox (selbst) reagieren (extension:)
         schoolNameComboBox.delegate = self
@@ -463,6 +457,14 @@ class MainViewController: NSViewController {
             //  lokalen Realm (erneut) verwenden
             if initializeLocalRealm() {
             
+                //  wenn keine lokalen Daten vorhanden sind,
+                //  "Erste Schritte" wieder aktivieren
+                if ((userRealm?.isEmpty) != nil) {
+                    
+                    userSettings.set(1, forKey: UserSettings.FIRST_RUN_STEP)
+                    isFirstStepCompleted = false
+                    
+                }
                 //  bisherige Realm-Benachrichtigungen "freigeben"
                 realmAllNotificationsToken?.invalidate()
                 //  View mit lokalem Realm inititalisieren
@@ -509,6 +511,7 @@ extension MainViewController: NSComboBoxDelegate {
     }
     
 }
+
 extension MainViewController: RealmDelegate {
     
     //  wenn in der RealmSyncLoginView ein Cloud-Realm initialisiert wurde
@@ -522,7 +525,7 @@ extension MainViewController: RealmDelegate {
             //  bricht der Nutzer nun ab, so muss der loakle Realm initialisiert werden
             if cloudRealm != nil {
                 
-                //  lokaler Realm was aktiviert, Sync nachtraeglich eingeschaltet
+                //  lokaler Realm war aktiviert, Sync nachtraeglich eingeschaltet
                 //  was ist mit bisherigen Daten? Koennen die migriert werden?
                 //  Hinweis an Nutzer
                 if self.userRealm != nil {
@@ -615,6 +618,13 @@ extension MainViewController: RealmDelegate {
             schoolNameComboBox.addItem(withObjectValue: school.name)
             schoolNameComboBox.selectItem(at: schoolNameComboBox.objectValues.count - 1)
             schoolNameComboBox.numberOfVisibleItems = schoolNameComboBox.objectValues.count
+        }
+        //  wurde die erste Schule angelegt?
+        if schoolList?.count == 1 {
+            
+            userSettings.set(2, forKey: UserSettings.FIRST_RUN_STEP)
+            updateFirstStepLabel(firstStepValue: 2)
+            
         }
         
         //  restliche View aktualisieren
