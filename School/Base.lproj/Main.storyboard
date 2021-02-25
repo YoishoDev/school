@@ -859,13 +859,13 @@
                             <comboBox verticalHuggingPriority="750" id="UVR-Dx-dWw">
                                 <rect key="frame" x="166" y="440" width="446" height="25"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
-                                <comboBoxCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" completes="NO" numberOfVisibleItems="5" id="jHd-0J-7D4">
+                                <comboBoxCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" usesSingleLineMode="YES" completes="NO" numberOfVisibleItems="1" id="jHd-0J-7D4">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </comboBoxCell>
                             </comboBox>
-                            <textField hidden="YES" horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" id="3mj-et-7i6">
+                            <textField hidden="YES" horizontalHuggingPriority="251" verticalHuggingPriority="750" id="3mj-et-7i6">
                                 <rect key="frame" x="668" y="371" width="70" height="31"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <textFieldCell key="cell" lineBreakMode="truncatingTail" alignment="center" title="2." drawsBackground="YES" id="siU-7X-pSK">
@@ -874,7 +874,7 @@
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <textField hidden="YES" horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" id="dgH-YX-3VQ">
+                            <textField hidden="YES" horizontalHuggingPriority="251" verticalHuggingPriority="750" id="dgH-YX-3VQ">
                                 <rect key="frame" x="668" y="321" width="70" height="31"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <textFieldCell key="cell" lineBreakMode="truncatingTail" alignment="center" title="3." drawsBackground="YES" id="FtF-nj-93c">
@@ -883,7 +883,7 @@
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <textField hidden="YES" horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" id="cKp-2v-mUh">
+                            <textField hidden="YES" horizontalHuggingPriority="251" verticalHuggingPriority="750" id="cKp-2v-mUh">
                                 <rect key="frame" x="668" y="271" width="70" height="31"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <textFieldCell key="cell" lineBreakMode="truncatingTail" alignment="center" title="4." drawsBackground="YES" id="d9y-2j-hwx">
@@ -892,7 +892,7 @@
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <textField hidden="YES" horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" id="O1w-xp-MRD">
+                            <textField hidden="YES" horizontalHuggingPriority="251" verticalHuggingPriority="750" id="O1w-xp-MRD">
                                 <rect key="frame" x="668" y="221" width="70" height="31"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <textFieldCell key="cell" lineBreakMode="truncatingTail" alignment="center" title="5." drawsBackground="YES" id="fxd-8g-bl1">
@@ -901,7 +901,7 @@
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" id="DQR-Fd-Mho">
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="DQR-Fd-Mho">
                                 <rect key="frame" x="668" y="476" width="70" height="31"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" heightSizable="YES"/>
                                 <textFieldCell key="cell" lineBreakMode="truncatingTail" alignment="center" title="1." drawsBackground="YES" id="SRR-Yg-Pvn">
@@ -910,7 +910,7 @@
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <button hidden="YES" verticalHuggingPriority="750" fixedFrame="YES" id="KSa-Fv-mQM">
+                            <button hidden="YES" verticalHuggingPriority="750" id="KSa-Fv-mQM">
                                 <rect key="frame" x="718" y="30" width="22" height="18"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <buttonCell key="cell" type="check" bezelStyle="regularSquare" imagePosition="left" inset="2" id="ApX-J4-dwR">
@@ -919,7 +919,6 @@
                                 </buttonCell>
                                 <connections>
                                     <action selector="cloudSyncButtonClicked:" target="XfG-lQ-9wD" id="zoY-bG-YCg"/>
-                                    <segue destination="9yr-Kz-pEB" kind="modal" identifier="Main2RealmSyncSeque" id="6Rp-6x-fXj"/>
                                 </connections>
                             </button>
                             <textField hidden="YES" horizontalHuggingPriority="251" verticalHuggingPriority="750" id="w2z-ff-Y6p">
@@ -950,6 +949,7 @@
                         <outlet property="schoolNameComboBox" destination="UVR-Dx-dWw" id="EMz-Vk-URn"/>
                         <outlet property="secondStepLabel" destination="3mj-et-7i6" id="cLD-G6-rKW"/>
                         <outlet property="thirdStepLabel" destination="dgH-YX-3VQ" id="9Nq-84-pJD"/>
+                        <segue destination="9yr-Kz-pEB" kind="modal" identifier="Main2RealmSyncSeque" id="EP0-DQ-gxf"/>
                     </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
@@ -1510,6 +1510,7 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
+        <segue reference="TDF-nK-emM"/>
         <segue reference="TEn-Jh-Tdp"/>
     </inferredMetricsTieBreakers>
 </document>

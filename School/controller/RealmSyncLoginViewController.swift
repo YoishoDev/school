@@ -137,7 +137,7 @@ class RealmSyncLoginViewController: NSViewController {
                             return
                         case .success(let userRealm):
                             //  Main benachrichtigen und Cloud-Realm uebergeben
-                            self?.delegate?.cloudRealmWasInit(userRealm)
+                            self?.delegate?.cloudRealmWasInit(true, userRealm)
                             //  modal schliessen, weiter in MainView
                             self?.view.window?.close()
                         }
@@ -196,7 +196,7 @@ class RealmSyncLoginViewController: NSViewController {
                                 return
                             case .success(let userRealm):
                                 //  Main benachrichtigen und Cloud-Realm uebergeben
-                                self?.delegate?.cloudRealmWasInit(userRealm)
+                                self?.delegate?.cloudRealmWasInit(true, userRealm)
                                 //  modal schliessen, weiter in MainView
                                 self?.view.window?.close()
                             }
@@ -297,6 +297,7 @@ class RealmSyncLoginViewController: NSViewController {
     
     @IBAction func cancelButtonClicked(_ sender: NSButton) {
         
+        delegate?.cloudRealmWasInit(false, nil)
         self.view.window?.close()
         
     }

@@ -16,6 +16,9 @@ class AddSchoolViewController: NSViewController {
     //  View-Elemente
     @IBOutlet weak var schoolNameTextField: NSTextField!
     
+    //  Benutzereinstellungen
+    let userSettings = UserDefaults.standard
+    
     //  Delegate - fuer Uebergabe des Realm
     internal weak var delegate: RealmDelegate?
     
@@ -36,7 +39,6 @@ class AddSchoolViewController: NSViewController {
             //  Nutzer hat es auch aktiviert?
             if UserSettings.keyExists(UserSettings.USE_REALM_SYNC) {
                 
-                let userSettings = UserDefaults.standard
                 if userSettings.bool(forKey: UserSettings.USE_REALM_SYNC) {
                     
                     useSyncedRealm = true
@@ -71,6 +73,7 @@ class AddSchoolViewController: NSViewController {
                     
                     //  pruefen, ob schon vorhanden
                     //  ueber Namen
+                    //  besser ueber Query / Filter
                     for school in schoolList! {
                         
                         if school.name.lowercased() == schoolNameTextField.stringValue.lowercased() {
@@ -105,11 +108,6 @@ class AddSchoolViewController: NSViewController {
                 }
 
                 school.name = schoolNameTextField.stringValue
-                //  Problem: Notify ueber Realm bevor Schule neu zugewiesen
-                //  Aktualisierung der Benutzereinstellungen
-                //  wir wissen hier noch nicht, ob das Hinzufuegen erfolgreich sein wird
-                let userSettings = UserDefaults.standard
-                userSettings.set(school.name, forKey: UserSettings.LAST_USED_SCHOOL_NAME)
                 //  Transaktion beginnen
                 userRealm?.beginWrite()
                 //  Objekt speichern
@@ -135,6 +133,9 @@ class AddSchoolViewController: NSViewController {
         
     @IBAction func cancelButtonClicked(_ sender: NSButton) {
     
+        //  Einloggen abgebrochen
+        //  lokalen Realm (weiter) verwenden
+        userSettings.set(false, forKey: UserSettings.USE_REALM_SYNC)
         self.view.window?.close()
         
     }

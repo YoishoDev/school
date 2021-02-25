@@ -18,7 +18,7 @@ let REMOVE_REALM_DATA: Bool = false
 //  Synchronisation mit Cloud
 internal struct RealmAppSettings {
 
-    static let USE_REALM_SYNC: Bool     = false
+    static let USE_REALM_SYNC: Bool     = true
     static let REALM_APP_ID: String     = "realmtestapp-guiuw"
     
 }
@@ -26,7 +26,7 @@ internal struct RealmAppSettings {
 //  Delegate fuer Cloud-Realm
 protocol RealmDelegate: class {
     
-    func cloudRealmWasInit(_ userRealm: Realm)
+    func cloudRealmWasInit(_ wasInitialized: Bool, _ userRealm: Realm?)
     func schoolWasAdded(_ school: School)
     
 }
