@@ -1146,7 +1146,7 @@
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" contentType="password" id="XCk-Jm-kuW">
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" textCompletion="NO" contentType="password" id="XCk-Jm-kuW">
                                 <rect key="frame" x="33" y="205" width="83" height="21"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="Passwort:" id="wDE-u1-cvh">
@@ -1164,17 +1164,6 @@
                                 </buttonCell>
                                 <connections>
                                     <action selector="cancelButtonClicked:" target="9yr-Kz-pEB" id="9lv-Bh-s5E"/>
-                                </connections>
-                            </button>
-                            <button verticalHuggingPriority="750" id="h1v-bO-HvX">
-                                <rect key="frame" x="136" y="159" width="151" height="18"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                <buttonCell key="cell" type="check" title="Anonyme Anmeldung" bezelStyle="regularSquare" imagePosition="left" inset="2" id="Jue-uu-af4">
-                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                    <font key="font" metaFont="system"/>
-                                </buttonCell>
-                                <connections>
-                                    <action selector="anonLogInCheckBoxClicked:" target="9yr-Kz-pEB" id="fRm-pU-Lzo"/>
                                 </connections>
                             </button>
                             <button verticalHuggingPriority="750" id="brZ-YZ-6lq">
@@ -1201,7 +1190,7 @@
                                 </secureTextFieldCell>
                             </secureTextField>
                             <button verticalHuggingPriority="750" id="3vG-NR-qE4">
-                                <rect key="frame" x="310" y="159" width="119" height="18"/>
+                                <rect key="frame" x="136" y="161" width="119" height="18"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <buttonCell key="cell" type="check" title="Login speichern" bezelStyle="regularSquare" imagePosition="left" inset="2" id="6Lw-Z6-s7T">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -1211,6 +1200,17 @@
                                     <action selector="anonLogInCheckBoxClicked:" target="9yr-Kz-pEB" id="5K0-ot-VvB"/>
                                 </connections>
                             </button>
+                            <button hidden="YES" verticalHuggingPriority="750" id="h1v-bO-HvX">
+                                <rect key="frame" x="277" y="161" width="151" height="18"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <buttonCell key="cell" type="check" title="Anonyme Anmeldung" bezelStyle="regularSquare" imagePosition="left" inset="2" id="Jue-uu-af4">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="anonLogInCheckBoxClicked:" target="9yr-Kz-pEB" id="fRm-pU-Lzo"/>
+                                </connections>
+                            </button>
                         </subviews>
                     </view>
                     <connections>
@@ -1218,7 +1218,7 @@
                         <outlet property="cancelButton" destination="Jcq-65-SOZ" id="IZK-od-muj"/>
                         <outlet property="emailAddressTextField" destination="wwI-I2-6oz" id="53g-r2-VKu"/>
                         <outlet property="loginButton" destination="brZ-YZ-6lq" id="sZn-aq-jnT"/>
-                        <outlet property="passwordTextField" destination="lkK-51-3S1" id="UQm-aO-AKQ"/>
+                        <outlet property="passwordTextField" destination="lkK-51-3S1" id="0t6-be-rRk"/>
                         <outlet property="realmSyncInfoLabel" destination="6sb-Yc-sRh" id="bHv-Hj-WHl"/>
                         <outlet property="saveLoginCheckBox" destination="3vG-NR-qE4" id="SGq-R9-5uG"/>
                     </connections>
@@ -1445,7 +1445,7 @@
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" emptySelection="NO" autosaveColumns="NO" rowHeight="24" rowSizeStyle="automatic" viewBased="YES" id="kGu-2L-K4V">
-                                            <rect key="frame" x="0.0" y="0.0" width="316" height="195"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="311" height="195"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <size key="intercellSpacing" width="17" height="0.0"/>
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -1464,11 +1464,11 @@
                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     <prototypeCellViews>
                                                         <tableCellView id="ai3-HX-qU7">
-                                                            <rect key="frame" x="8" y="0.0" width="299" height="24"/>
+                                                            <rect key="frame" x="8" y="0.0" width="294" height="24"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" id="Waf-dA-SeJ">
-                                                                    <rect key="frame" x="0.0" y="-17" width="299" height="40"/>
+                                                                    <rect key="frame" x="0.0" y="-17" width="294" height="40"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="Dtw-SM-Cyf">
                                                                         <font key="font" metaFont="system"/>
@@ -1487,8 +1487,8 @@
                                         </tableView>
                                     </subviews>
                                 </clipView>
-                                <scroller key="horizontalScroller" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="Knf-Ic-jiy">
-                                    <rect key="frame" x="1" y="180" width="311" height="16"/>
+                                <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="Knf-Ic-jiy">
+                                    <rect key="frame" x="1" y="181" width="311" height="15"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                                 <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="jI3-h8-vPW">
@@ -1510,7 +1510,6 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="TDF-nK-emM"/>
         <segue reference="TEn-Jh-Tdp"/>
     </inferredMetricsTieBreakers>
 </document>

@@ -14,6 +14,7 @@ import RealmSwift
 
 //  vorhandene Daten loeschen, Debug
 let REMOVE_REALM_DATA: Bool = false
+let USE_ANON_AUTH           = false
 
 //  Synchronisation mit Cloud
 internal struct RealmAppSettings {

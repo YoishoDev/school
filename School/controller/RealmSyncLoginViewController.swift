@@ -17,6 +17,7 @@ class RealmSyncLoginViewController: NSViewController {
     @IBOutlet weak var realmSyncInfoLabel: NSTextFieldCell!
     @IBOutlet weak var emailAddressTextField: NSTextField!
     @IBOutlet weak var passwordTextField: NSSecureTextField!
+    
     @IBOutlet weak var loginButton: NSButton!
     @IBOutlet weak var cancelButton: NSButton!
     @IBOutlet weak var anonLoginCheckBox: NSButton!
@@ -155,8 +156,7 @@ class RealmSyncLoginViewController: NSViewController {
     private func logInWithEmailAndPassword() {
        
         realmSyncInfoLabel.stringValue = "Log in as user: \(emailAddressTextField.stringValue)"
-        setLoading(true);
-
+        
         realmApp.login(credentials: Credentials.emailPassword(email: emailAddressTextField.stringValue,
                                                               password: passwordTextField.stringValue)) { [weak self](result) in
             
@@ -204,13 +204,21 @@ class RealmSyncLoginViewController: NSViewController {
                     }
                 }
             }
-        };
+        }
         
     }
-
+    
+    //  wird nach dem Initialisieren aufgerufen
     override func viewDidLoad() {
         
         super.viewDidLoad()
+        
+        //  anonyme Authentifizierung
+        if USE_ANON_AUTH {
+            
+            anonLoginCheckBox.isHidden = false
+            
+        }
         
         //  Login gespeichert? Felder vorbelegen
         if UserSettings.keyExists(UserSettings.SAVE_LOGIN) {
@@ -219,8 +227,7 @@ class RealmSyncLoginViewController: NSViewController {
                 if let lastUsedEmail = userSettings.string(forKey: UserSettings.LAST_USED_EMAIL) {
                     
                     saveLoginCheckBox.state = NSControl.StateValue.on
-                    //  Problem beim Login
-                    //emailAddressTextField.stringValue = lastUsedEmail
+                    emailAddressTextField.stringValue = lastUsedEmail
                 }
                 
             }
@@ -228,7 +235,7 @@ class RealmSyncLoginViewController: NSViewController {
         }
         
         //  Aktivitaetenanzeige
-        progressIndicator.style = NSProgressIndicator.Style.spinning
+        progressIndicator.style = NSProgressIndicator.Style.bar
         progressIndicator.usesThreadedAnimation = true
         self.view.addSubview(progressIndicator)
 
@@ -247,11 +254,6 @@ class RealmSyncLoginViewController: NSViewController {
             
             emailAddressTextField.isEditable = true
             passwordTextField.isEditable = true
-            if emailAddressTextField.stringValue.isEmpty || passwordTextField.stringValue.isEmpty {
-                
-            realmSyncInfoLabel.stringValue = "Bitte Login-Daten eingeben."
-                
-            }
 
         }
         
@@ -264,24 +266,26 @@ class RealmSyncLoginViewController: NSViewController {
         
             //  Anmeldung mit E-Mail und Passwort
             //  Daten eingegeben?
-            if emailAddressTextField.stringValue.isEmpty && passwordTextField.stringValue.isEmpty {
+            if emailAddressTextField.stringValue.isEmpty || passwordTextField.stringValue.isEmpty {
                 
                 let dialog = ModalOptionDialog(message: "Bitte E-Mail-Adresse und Passwort eingeben!",
                                                buttonStyle: ModalOptionDialog.ButtonStyle.OK_OPTION,
                                                dialogStyle: ModalOptionDialog.DialogStyle.CRITICAL)
                 dialog.showDialog()
                 return
+            }
+            
+            //  Login-Daten speichern?
+            if saveLoginCheckBox.state == NSControl.StateValue.on {
+                
+                userSettings.setValue(true, forKey: UserSettings.SAVE_LOGIN)
+                userSettings.setValue(emailAddressTextField.stringValue, forKey: UserSettings.LAST_USED_EMAIL)
                 
             } else {
                 
-                //  Login-Daten speichern?
-                if saveLoginCheckBox.state == NSControl.StateValue.on {
-                    
-                    userSettings.setValue(true, forKey: UserSettings.SAVE_LOGIN)
-                    userSettings.setValue(emailAddressTextField.stringValue, forKey: UserSettings.LAST_USED_EMAIL)
-                    
-                }
-                
+                userSettings.setValue(false, forKey: UserSettings.SAVE_LOGIN)
+                userSettings.setValue("", forKey: UserSettings.LAST_USED_EMAIL)
+                  
             }
             
             logInWithEmailAndPassword()
